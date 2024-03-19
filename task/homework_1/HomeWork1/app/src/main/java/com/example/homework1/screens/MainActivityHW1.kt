@@ -7,9 +7,9 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import com.example.homework1.R
+import com.example.app.R
 
-class MainActivity : AppCompatActivity() {
+class MainActivityHW1 : AppCompatActivity() {
 
     private lateinit var textViewResult: TextView
     private lateinit var buttonOpenSecondActivity: Button
@@ -25,12 +25,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_main_hw1)
 
         textViewResult = findViewById(R.id.textViewResult)
         buttonOpenSecondActivity = findViewById(R.id.buttonOpenSecondActivity)
         buttonOpenSecondActivity.setOnClickListener {
-            val intent = Intent(this@MainActivity, SecondActivity::class.java)
+            val intent = Intent(this@MainActivityHW1, SecondActivityHW1::class.java)
             launcherActivity.launch(intent)
         }
     }

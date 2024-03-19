@@ -32,7 +32,7 @@ class TimerService : Service() {
                 log("Timer $i")
             }
             val result = "timer is over (10 sec)"
-            val resultIntent = Intent(ACTION_RESULT).putExtra(MainActivity.RESULT_EXTRA_KEY, result)
+            val resultIntent = Intent(ACTION_RESULT).putExtra(MainActivityHW1.RESULT_EXTRA_KEY, result)
             localBroadcastManager.sendBroadcast(resultIntent)
         }
         return START_NOT_STICKY
