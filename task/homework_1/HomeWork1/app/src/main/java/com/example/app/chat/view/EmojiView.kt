@@ -1,4 +1,4 @@
-package com.example.app
+package com.example.app.chat.view
 
 import android.content.Context
 import android.graphics.Canvas
@@ -10,6 +10,9 @@ import android.text.TextPaint
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.withStyledAttributes
+import com.example.app.R
+import com.example.app.dp
+import com.example.app.sp
 
 class EmojiView @JvmOverloads constructor(
     context: Context,

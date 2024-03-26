@@ -1,12 +1,14 @@
-package com.example.app
+package com.example.app.chat.view
 
 import android.content.Context
 import android.graphics.Color
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.core.view.children
+import androidx.core.view.contains
+import com.example.app.R
+import com.example.app.dp
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.ShapeAppearanceModel
@@ -24,8 +26,8 @@ class FlexboxLayout @JvmOverloads constructor(
     private val plusButton by lazy {
         val button = ShapeableImageView(context)
         val roundSize = 10f.dp(context)
-        val paddingVertical = 4f.dp(context).roundToInt()
-        val paddingHorizontal = 8f.dp(context).roundToInt()
+        val paddingVertical = 2f.dp(context).roundToInt()
+        val paddingHorizontal = 2f.dp(context).roundToInt()
         button.layoutParams = generateDefaultLayoutParams()
         button.setContentPadding(paddingHorizontal, paddingVertical, paddingHorizontal, paddingVertical)
 
@@ -47,8 +49,10 @@ class FlexboxLayout @JvmOverloads constructor(
         buttonPlusClickListener = listener
     }
 
-    fun addButtonPlus(): ImageView {
-        return plusButton
+    fun addButtonPlus() {
+        if (!contains(plusButton)) {
+            addView(plusButton)
+        }
     }
 
     fun addViewAndRelayout(view: View) {

@@ -1,9 +1,14 @@
-package com.example.app
+package com.example.app.chat.view
 
 import android.content.Context
+import android.graphics.Typeface
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.ContextCompat
+import com.example.app.R
+import com.example.app.dp
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.ShapeAppearanceModel
@@ -35,12 +40,21 @@ class MessageViewGroup @JvmOverloads constructor(
 
         nameTextView = TextView(context).apply {
             text = "Username"
+            setTextColor(
+                ContextCompat.getColor(
+                    context,
+                    com.google.android.material.R.color.material_deep_teal_200
+                )
+            )
+            setTypeface(null, Typeface.BOLD)
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
             layoutParams = generateDefaultLayoutParams()
             addView(this)
         }
 
         messageTextView = TextView(context).apply {
             text = "Message text"
+            setTextColor(ContextCompat.getColor(context, R.color.white))
             layoutParams = generateDefaultLayoutParams()
             addView(this)
         }
@@ -65,13 +79,13 @@ class MessageViewGroup @JvmOverloads constructor(
         val availableHeight = heightSize - paddingTop - paddingBottom
 
         nameTextView.measure(
-            MeasureSpec.makeMeasureSpec(availableWidth, MeasureSpec.AT_MOST),
-            MeasureSpec.makeMeasureSpec(availableHeight, MeasureSpec.AT_MOST)
+            MeasureSpec.makeMeasureSpec(availableWidth, MeasureSpec.UNSPECIFIED),
+            MeasureSpec.makeMeasureSpec(availableHeight, MeasureSpec.UNSPECIFIED)
         )
 
         messageTextView.measure(
-            MeasureSpec.makeMeasureSpec(availableWidth, MeasureSpec.AT_MOST),
-            MeasureSpec.makeMeasureSpec(availableHeight, MeasureSpec.AT_MOST)
+            MeasureSpec.makeMeasureSpec(availableWidth, MeasureSpec.UNSPECIFIED),
+            MeasureSpec.makeMeasureSpec(availableHeight, MeasureSpec.UNSPECIFIED)
         )
 
         val totalHeight = paddingTop + paddingBottom + 2 * MARGIN_GAP + maxOf(

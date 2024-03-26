@@ -2,5 +2,8 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="gray">#CCCCCC</color>
+    <color name="gray_sheet">#1C1C1C</color>
+    <color name="gray_peek">#555555</color>
     <color name="orange">#FF5722</color>
 </resources>
