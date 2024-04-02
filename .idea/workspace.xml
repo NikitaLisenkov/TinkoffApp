@@ -5,7 +5,26 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c2300acd-4696-46ce-9ce0-287e981b5583" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task/homework_1/HomeWork1/app/src/main/java/com/example/app/ChannelsFragment.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task/homework_1/HomeWork1/app/src/main/java/com/example/app/PeopleFragment.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task/homework_1/HomeWork1/app/src/main/java/com/example/app/ProfileFragment.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task/homework_1/HomeWork1/app/src/main/java/com/example/app/chat/ChatDiffUtilCallback.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task/homework_1/HomeWork1/app/src/main/java/com/example/app/chat/MainFragment.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task/homework_1/HomeWork1/app/src/main/res/drawable/bottom_navigation_selector.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task/homework_1/HomeWork1/app/src/main/res/drawable/ic_channels.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task/homework_1/HomeWork1/app/src/main/res/drawable/ic_people.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task/homework_1/HomeWork1/app/src/main/res/drawable/ic_profile.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task/homework_1/HomeWork1/app/src/main/res/layout/fragment_channels.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task/homework_1/HomeWork1/app/src/main/res/layout/fragment_main.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task/homework_1/HomeWork1/app/src/main/res/layout/fragment_people.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task/homework_1/HomeWork1/app/src/main/res/layout/fragment_profile.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task/homework_1/HomeWork1/app/src/main/res/menu/bottom_navigation_menu.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task/homework_1/HomeWork1/app/src/main/res/navigation/navigation_fragment.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/task/homework_1/HomeWork1/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/task/homework_1/HomeWork1/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/task/homework_1/HomeWork1/app/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/task/homework_1/HomeWork1/app/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/task/homework_1/HomeWork1/app/src/main/java/com/example/app/chat/adapter/ChatAdapter.kt" beforeDir="false" afterPath="$PROJECT_DIR$/task/homework_1/HomeWork1/app/src/main/java/com/example/app/chat/adapter/ChatAdapter.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/task/homework_1/HomeWork1/app/src/main/res/layout/activity_main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/task/homework_1/HomeWork1/app/src/main/res/layout/activity_main.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/task/homework_1/HomeWork1/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/task/homework_1/HomeWork1/app/src/main/res/values/strings.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,9 +40,9 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 3
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
   <component name="ProjectId" id="2e0N2WMY2cNI1GduJRxMPsc5qXN" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -36,7 +55,7 @@
     "RunOnceActivity.cidr.known.project.marker": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "last_opened_file_path": "C:/Users/preda/AndroidStudioProjects/tfs_spring_2024"
+    "last_opened_file_path": "C:/Users/preda/AndroidStudioProjects/tfs_spring_2024/task/homework_1/HomeWork1"
   }
 }]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />

@@ -1,8 +1,11 @@
 package com.example.app.chat
 
+import com.example.app.R
+import com.example.app.channels.model.ChannelsItem
 import com.example.app.chat.model.Date
 import com.example.app.chat.model.MessageIncoming
 import com.example.app.chat.model.MessageOutgoing
+import com.example.app.chat.model.People
 import com.example.app.chat.model.Reaction
 
 object FakeData {
@@ -82,4 +85,31 @@ object FakeData {
             }
         )
     )
+
+    val people = List(30) {
+        People(
+            avatar = "",
+            fullName = "Darrel Steward $it",
+            email = "darrel@company.com $it",
+            isOnline = it % 2 == 0
+        )
+    }
+
+    val channels = List(10) { channelIndex ->
+        val channelName = "Channel #$channelIndex"
+        ChannelsItem.Channel(
+            id = "$channelIndex",
+            text = channelName,
+            isExpanded = false,
+            topics = List(channelIndex) { topicIndex ->
+                val topicId = "$channelIndex$topicIndex"
+                ChannelsItem.Topic(
+                    id = topicId,
+                    text = "Topic #$topicId",
+                    channelName = channelName,
+                    backgroundColorRes = if (topicIndex % 2 == 0) R.color.color_cyan else R.color.color_yellow
+                )
+            }
+        )
+    }.filter { it.topics.isNotEmpty() }
 }

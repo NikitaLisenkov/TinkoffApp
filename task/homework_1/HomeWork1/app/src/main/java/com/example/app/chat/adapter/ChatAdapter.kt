@@ -1,13 +1,14 @@
 package com.example.app.chat.adapter
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.app.R
 import com.example.app.addReactions
+import com.example.app.chat.ChatItemDiffCallback
 import com.example.app.chat.model.ChatItem
 import com.example.app.chat.model.Date
 import com.example.app.chat.model.MessageIncoming
@@ -21,10 +22,11 @@ class ChatAdapter(
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var chatItems = listOf<ChatItem>()
-        @SuppressLint("NotifyDataSetChanged")
         set(value) {
+            val callback = ChatItemDiffCallback(chatItems, value)
+            val diffResult = DiffUtil.calculateDiff(callback)
+            diffResult.dispatchUpdatesTo(this)
             field = value
-            notifyDataSetChanged()
         }
 
     override fun getItemViewType(position: Int): Int {
