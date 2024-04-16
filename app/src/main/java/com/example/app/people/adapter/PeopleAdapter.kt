@@ -3,16 +3,16 @@ package com.example.app.people.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.app.R
 import com.example.app.databinding.ItemPeopleBinding
 import com.example.app.people.model.People
 
-class PeopleAdapter :
-    androidx.recyclerview.widget.ListAdapter<People, PeopleAdapter.PeopleViewHolder>(
-        PeopleDiffCallback()
-    ) {
-
+class PeopleAdapter : ListAdapter<People, PeopleAdapter.PeopleViewHolder>(
+    PeopleDiffCallback()
+) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PeopleViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_people, parent, false)
@@ -39,6 +39,9 @@ class PeopleAdapter :
                     R.drawable.indicator_offline
                 }
             )
+            Glide.with(binding.root)
+                .load(person.avatarUrl)
+                .into(binding.ivPeopleAvatar)
         }
     }
 }

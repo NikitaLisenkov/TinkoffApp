@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.app.R
 import com.example.app.utils.addReactions
 import com.example.app.chat.model.ChatItem
-import com.example.app.chat.model.Date
+import com.example.app.chat.model.DateItem
 import com.example.app.chat.model.MessageIncoming
 import com.example.app.chat.model.MessageOutgoing
 import com.example.app.chat.view.FlexboxLayout
@@ -17,14 +17,14 @@ import com.example.app.chat.view.MessageViewGroup
 
 class ChatAdapter(
     private val onAddReactionClick: (ChatItem) -> Unit,
-    private val onEmojiClick: (emojiCode: String, msgId: String) -> Unit
+    private val onEmojiClick: (emojiCode: String, msgId: Long) -> Unit
 ) : ListAdapter<ChatItem, RecyclerView.ViewHolder>(ChatDiffCallback()) {
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
             is MessageIncoming -> MESSAGE_INCOMING_VIEW_TYPE
             is MessageOutgoing -> MESSAGE_OUTGOING_VIEW_TYPE
-            is Date -> DATE_VIEW_TYPE
+            is DateItem -> DATE_VIEW_TYPE
         }
     }
 
@@ -78,7 +78,7 @@ class ChatAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is DateViewHolder -> holder.bind(getItem(position) as Date)
+            is DateViewHolder -> holder.bind(getItem(position) as DateItem)
             is MessageIncomingViewHolder -> holder.bind(getItem(position) as MessageIncoming)
             is MessageOutgoingViewHolder -> holder.bind(getItem(position) as MessageOutgoing)
         }
@@ -87,14 +87,14 @@ class ChatAdapter(
     class DateViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val txDate: TextView = itemView.findViewById(R.id.txDate)
 
-        fun bind(dateChat: Date) {
-            txDate.text = dateChat.date
+        fun bind(dateItem: DateItem) {
+            txDate.text = dateItem.date
         }
     }
 
     class MessageIncomingViewHolder(
         itemView: View,
-        private val onEmojiClick: (emojiCode: String, msgId: String) -> Unit
+        private val onEmojiClick: (emojiCode: String, msgId: Long) -> Unit
     ) : RecyclerView.ViewHolder(itemView) {
 
         var item: MessageIncoming? = null
@@ -123,7 +123,7 @@ class ChatAdapter(
 
     class MessageOutgoingViewHolder(
         itemView: View,
-        private val onEmojiClick: (emojiCode: String, msgId: String) -> Unit
+        private val onEmojiClick: (emojiCode: String, msgId: Long) -> Unit
     ) : RecyclerView.ViewHolder(itemView) {
 
         var item: MessageOutgoing? = null

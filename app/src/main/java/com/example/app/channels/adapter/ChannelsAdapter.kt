@@ -11,13 +11,13 @@ import com.example.app.databinding.ItemChannelBinding
 import com.example.app.databinding.ItemTopicBinding
 
 class ChannelsAdapter(
-    private val onChannelClick: (ChannelsItem.Channel) -> Unit,
+    private val onChannelClick: (ChannelsItem.Stream) -> Unit,
     private val onTopicClick: (ChannelsItem.Topic) -> Unit
 ) : ListAdapter<ChannelsItem, RecyclerView.ViewHolder>(ChannelDiffCallback()) {
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
-            is ChannelsItem.Channel -> CHANNEL_VIEW_TYPE
+            is ChannelsItem.Stream -> CHANNEL_VIEW_TYPE
             is ChannelsItem.Topic -> TOPIC_VIEW_TYPE
         }
     }
@@ -29,7 +29,7 @@ class ChannelsAdapter(
                 ChannelViewHolder(view).apply {
                     itemView.setOnClickListener {
                         onChannelClick.invoke(
-                            getItem(adapterPosition) as ChannelsItem.Channel
+                            getItem(adapterPosition) as ChannelsItem.Stream
                         )
                     }
                 }
@@ -52,7 +52,7 @@ class ChannelsAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is ChannelViewHolder -> holder.bind(getItem(position) as ChannelsItem.Channel)
+            is ChannelViewHolder -> holder.bind(getItem(position) as ChannelsItem.Stream)
             is TopicViewHolder -> holder.bind(getItem(position) as ChannelsItem.Topic)
         }
     }
@@ -62,7 +62,7 @@ class ChannelsAdapter(
 
         private val binding = ItemChannelBinding.bind(itemView)
 
-        fun bind(item: ChannelsItem.Channel) {
+        fun bind(item: ChannelsItem.Stream) {
             binding.tvText.text = item.text
             binding.ivArrow.setImageResource(
                 if (item.isExpanded) R.drawable.ic_arrow_down_24 else R.drawable.ic_arrow_up_24

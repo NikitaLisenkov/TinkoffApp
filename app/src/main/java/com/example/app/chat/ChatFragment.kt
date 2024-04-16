@@ -29,7 +29,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
             onAddReactionsClick(it)
         },
         onEmojiClick = { emojiCode, msgId ->
-            viewModel.updateReactions(
+            viewModel.sendReaction(
                 msgId = msgId,
                 emojiCode = emojiCode
             )
@@ -39,10 +39,11 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         arguments?.let {
-            val channelName = it.getString(ARG_CHANNEL_NAME).orEmpty()
+            val streamName = it.getString(ARG_STREAM_NAME).orEmpty()
             val topicName = it.getString(ARG_TOPIC_NAME).orEmpty()
-            binding.toolbar.title = channelName
+            binding.toolbar.title = streamName
             binding.tvTopic.text = topicName
+            viewModel.loadMessages(streamName, topicName)
         }
 
         binding.toolbar.setNavigationOnClickListener {
@@ -95,10 +96,10 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
             ReactionsDialog.REQUEST_KEY,
             this
         ) { requestKey, result ->
-            val msgId = result.getString(ReactionsDialog.RESULT_KEY_MSG_ID)
+            val msgId = result.getLong(ReactionsDialog.RESULT_KEY_MSG_ID, -1)
             val emojiCode = result.getString(ReactionsDialog.RESULT_KEY_EMOJI)
-            if (msgId != null && emojiCode != null) {
-                viewModel.updateReactions(
+            if (msgId != -1L && emojiCode != null) {
+                viewModel.sendReaction(
                     msgId = msgId,
                     emojiCode = emojiCode
                 )
@@ -109,10 +110,16 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
     private fun render(items: List<ChatItem>) {
         val previousSize = adapter.currentList.size
         adapter.submitList(items) {
-            if (previousSize != adapter.currentList.size) {
-                binding.rvMessageList.smoothScrollToPosition(
-                    adapter.currentList.size - 1
-                )
+            val position = adapter.currentList.size - 1
+            when {
+                previousSize == 0 -> {
+                    binding.rvMessageList.scrollToPosition(position)
+
+                }
+
+                previousSize != adapter.currentList.size -> {
+                    binding.rvMessageList.smoothScrollToPosition(position)
+                }
             }
         }
     }
@@ -120,13 +127,13 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
     companion object {
         const val TAG: String = "TAG_CHAT_FRAGMENT"
 
-        private const val ARG_CHANNEL_NAME: String = "ARG_CHANNEL_NAME"
+        private const val ARG_STREAM_NAME: String = "ARG_STREAM_NAME"
         private const val ARG_TOPIC_NAME: String = "ARG_TOPIC_NAME"
 
-        fun newInstance(channelName: String, topicName: String): ChatFragment =
+        fun newInstance(streamName: String, topicName: String): ChatFragment =
             ChatFragment().apply {
                 arguments = bundleOf(
-                    ARG_CHANNEL_NAME to channelName,
+                    ARG_STREAM_NAME to streamName,
                     ARG_TOPIC_NAME to topicName
                 )
             }

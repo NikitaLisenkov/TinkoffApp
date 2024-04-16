@@ -102,7 +102,7 @@ class ChannelsFragment : Fragment(R.layout.fragment_channels) {
             .replace(
                 R.id.fragmentContainerView,
                 ChatFragment.newInstance(
-                    channelName = item.channelName,
+                    streamName = item.streamName,
                     topicName = item.text
                 ),
                 ChatFragment.TAG

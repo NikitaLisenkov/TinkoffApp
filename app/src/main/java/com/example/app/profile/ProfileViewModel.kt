@@ -1,43 +1,37 @@
-package com.example.app.people
+package com.example.app.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.app.di.GlobalDI
-import com.example.app.people.model.People
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.coroutines.cancellation.CancellationException
 
-class PeopleViewModel : ViewModel() {
+class ProfileViewModel : ViewModel() {
 
     private val _state: MutableStateFlow<State> = MutableStateFlow(State.Loading)
-
     val state: Flow<State> = _state
 
     private val api = GlobalDI.zulipApi
 
     init {
-        loadPeople()
+        loadData()
     }
 
-    fun loadPeople() {
-        viewModelScope.launch(Dispatchers.IO) {
+    private fun loadData() {
+        viewModelScope.launch {
             _state.update { State.Loading }
             try {
-                val response = api.getAllUsers()
-                val users = response.members.map {
-                    People(
-                        id = it.userId,
-                        avatarUrl = it.avatarUrl,
-                        fullName = it.fullName,
-                        email = it.email,
-                        isOnline = it.isActive
+                val response = api.getOwnUserProfile()
+                _state.update {
+                    State.Content(
+                        avatarUrl = response.avatarUrl,
+                        name = response.fullName,
+                        isOnline = response.isActive
                     )
                 }
-                _state.update { State.Content(users) }
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Throwable) {
@@ -48,8 +42,12 @@ class PeopleViewModel : ViewModel() {
 
     sealed interface State {
         data object Loading : State
-        data class Content(val people: List<People>) : State
+        data class Content(
+            val avatarUrl: String,
+            val name: String,
+            val isOnline: Boolean
+        ) : State
+
         data object Error : State
     }
-
 }

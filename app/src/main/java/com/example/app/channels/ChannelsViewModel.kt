@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.app.FakeData
 import com.example.app.channels.model.ChannelsItem
+import com.example.app.di.GlobalDI
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -17,6 +18,8 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
@@ -25,24 +28,48 @@ class ChannelsViewModel : ViewModel() {
     private val _state: MutableStateFlow<State> = MutableStateFlow(State.Loading)
     val state: Flow<State> = _state
 
+    private val api = GlobalDI.zulipApi
+
     init {
         loadData(SelectedTab.SUBSCRIBED)
     }
 
     fun loadData(tab: SelectedTab) {
         viewModelScope.launch(Dispatchers.IO) {
-            _state.value = State.Loading
-            delay(1000)
+            _state.update { State.Loading }
+            try {
+                val response = when (tab) {
+                    SelectedTab.SUBSCRIBED -> api.getStreamsSubscriptions()
+                    SelectedTab.ALL_STREAMS -> api.getAllStreams()
+                }
 
-            val channels = when (tab) {
-                SelectedTab.SUBSCRIBED -> FakeData.channels.take(3)
-                SelectedTab.ALL_STREAMS -> FakeData.channels
+                val streams = mutableListOf<ChannelsItem.Stream>()
+
+                response.streams.map {
+                    launch {
+                        val topics = loadTopics(it.streamId, it.name)
+                        streams.add(
+                            ChannelsItem.Stream(
+                                id = it.streamId,
+                                text = it.name,
+                                isExpanded = false,
+                                topics = topics
+                            )
+                        )
+                    }
+                }.joinAll()
+
+                _state.update {
+                    State.Content(
+                        items = streams,
+                        selectedTab = tab
+                    )
+                }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Throwable) {
+                State.Error
             }
-
-            _state.value = State.Content(
-                items = channels,
-                selectedTab = tab
-            )
         }
     }
 
@@ -53,7 +80,6 @@ class ChannelsViewModel : ViewModel() {
     fun onAllStreamsClick() {
         loadData(SelectedTab.ALL_STREAMS)
     }
-
 
     private val searchFlow = MutableSharedFlow<String>(extraBufferCapacity = 100)
 
@@ -85,7 +111,7 @@ class ChannelsViewModel : ViewModel() {
                 throw Throwable("Random error")
             }
 
-            val result = FakeData.channels.filter { channel ->
+            val result = FakeData.streams.filter { channel ->
                 channel.text.contains(query, ignoreCase = true)
             }
             val selectedTab = (_state.value as? State.Content)?.selectedTab ?: SelectedTab.SUBSCRIBED
@@ -97,14 +123,14 @@ class ChannelsViewModel : ViewModel() {
         }
     }
 
-    fun onChannelClick(item: ChannelsItem.Channel) {
+    fun onChannelClick(item: ChannelsItem.Stream) {
         viewModelScope.launch(Dispatchers.IO) {
             val currentState = _state.value as? State.Content ?: return@launch
 
             var topicsToRemove: List<ChannelsItem.Topic> = emptyList()
 
             val updatedItems = currentState.items.flatMap { currentItem ->
-                if (currentItem.id == item.id && currentItem is ChannelsItem.Channel) {
+                if (currentItem.id == item.id && currentItem is ChannelsItem.Stream) {
                     if (currentItem.isExpanded) {
                         topicsToRemove = currentItem.topics
                         listOf(currentItem.copy(isExpanded = false))
@@ -117,6 +143,24 @@ class ChannelsViewModel : ViewModel() {
             }
 
             _state.value = currentState.copy(items = updatedItems - topicsToRemove.toSet())
+        }
+    }
+
+    private suspend fun loadTopics(streamId: Int, streamName: String): List<ChannelsItem.Topic> {
+        val response = try {
+            api.getTopics(streamId).topics
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Throwable) {
+            emptyList()
+        }
+        return response.map {
+            ChannelsItem.Topic(
+                id = it.maxId,
+                text = it.name,
+                streamName = streamName,
+                backgroundColorRes = 0
+            )
         }
     }
 

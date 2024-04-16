@@ -17,8 +17,8 @@ class ReactionsDialog : BottomSheetDialogFragment(R.layout.bottom_sheet) {
         }
     )
 
-    private val messageId: String
-        get() = arguments?.getString(ARG_MSG_ID, "").orEmpty()
+    private val messageId: Long
+        get() = arguments?.getLong(ARG_MSG_ID, -1) ?: -1
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
