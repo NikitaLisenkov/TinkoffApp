@@ -13,5 +13,5 @@
         android:layout_height="wrap_content"
         android:textColor="@color/white"
         android:textSize="14sp"
-        tools:text="24 March" />
+        tools:text="@string/date" />
 </LinearLayout>

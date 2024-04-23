@@ -42,7 +42,7 @@
         app:layout_constraintStart_toEndOf="@id/ivPeopleAvatar"
         app:layout_constraintTop_toTopOf="@id/ivPeopleAvatar"
         app:layout_constraintVertical_chainStyle="packed"
-        tools:text="Darrel Steward" />
+        tools:text="@string/darrel_steward" />
 
     <TextView
         android:id="@+id/tvPeopleEmail"
@@ -57,5 +57,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/tvPeopleName"
         app:layout_constraintTop_toBottomOf="@id/tvPeopleName"
-        tools:text="darrel@company.com" />
+        tools:text="@string/email" />
 </androidx.constraintlayout.widget.ConstraintLayout>

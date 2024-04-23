@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/white"
         android:textSize="32sp"
-        tools:text="Darrel Steward" />
+        tools:text="@string/darrel_steward" />
 
     <TextView
         android:id="@+id/tvUserStatus"
@@ -37,5 +37,5 @@
         android:layout_height="wrap_content"
         android:textColor="@color/color_online"
         android:textSize="16sp"
-        tools:text="online" />
+        tools:text="@string/online" />
 </LinearLayout>

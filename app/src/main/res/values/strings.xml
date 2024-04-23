@@ -8,4 +8,14 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="online">online</string>
     <string name="offline">offline</string>
+    <string name="something_went_wrong">Something went wrong</string>
+    <string name="retry">Retry</string>
+    <string name="subscribed">Subscribed</string>
+    <string name="darrel_steward">Darrel Steward</string>
+    <string name="email">darrel@company.com</string>
+    <string name="date">24 March</string>
+    <string name="general">#general</string>
+    <string name="topic_testing">Topic: #testing</string>
+    <string name="hint_write">Написать...</string>
+    <string name="search">Search...</string>
 </resources>

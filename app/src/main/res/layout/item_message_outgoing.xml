@@ -14,7 +14,7 @@
         android:textColor="@color/white"
         tools:text="setsetsetgsetgsets" />
 
-    <com.example.app.chat.view.FlexboxLayout
+    <com.example.app.presentation.chat.view.FlexboxLayout
         android:id="@+id/reactFlexbox"
         android:layout_width="260dp"
         android:layout_height="wrap_content" />

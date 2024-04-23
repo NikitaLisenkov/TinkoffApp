@@ -6,9 +6,9 @@ import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.setPadding
 import com.example.app.R
-import com.example.app.chat.model.Reaction
-import com.example.app.chat.view.EmojiView
-import com.example.app.chat.view.FlexboxLayout
+import com.example.app.presentation.chat.model.Reaction
+import com.example.app.presentation.chat.view.EmojiView
+import com.example.app.presentation.chat.view.FlexboxLayout
 import kotlin.math.roundToInt
 
 fun Float.sp(context: Context) = TypedValue.applyDimension(

@@ -1,8 +1,8 @@
 package com.example.app
 
-import com.example.app.channels.model.ChannelsItem
-import com.example.app.chat.model.Reaction
-import com.example.app.people.model.People
+import com.example.app.presentation.channels.model.ChannelsItem
+import com.example.app.presentation.chat.model.Reaction
+import com.example.app.presentation.people.model.People
 
 object FakeData {
 
