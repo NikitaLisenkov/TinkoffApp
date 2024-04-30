@@ -4,8 +4,11 @@ import com.example.app.data.network.ZulipApi
 import com.example.app.data.repository.mappers.toDomain
 import com.example.app.domain.model.OwnProfileModel
 import com.example.app.domain.repo.ProfileRepository
+import javax.inject.Inject
 
-class ProfileRepositoryImpl(private val api: ZulipApi) : ProfileRepository {
+class ProfileRepositoryImpl @Inject constructor(
+    private val api: ZulipApi
+) : ProfileRepository {
 
     override suspend fun getOwnUserProfile(): OwnProfileModel {
         val response = api.getOwnUserProfile()

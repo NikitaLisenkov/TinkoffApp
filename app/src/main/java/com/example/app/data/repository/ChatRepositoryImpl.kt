@@ -15,8 +15,9 @@ import com.google.gson.Gson
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
 import java.net.SocketTimeoutException
+import javax.inject.Inject
 
-class ChatRepositoryImpl(private val api: ZulipApi) : ChatRepository {
+class ChatRepositoryImpl @Inject constructor(private val api: ZulipApi) : ChatRepository {
 
     override suspend fun getMessages(streamName: String, topicName: String): List<MessageModel> {
         return api.getMessages(

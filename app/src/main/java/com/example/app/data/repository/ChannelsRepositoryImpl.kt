@@ -5,8 +5,9 @@ import com.example.app.data.repository.mappers.toDomain
 import com.example.app.domain.model.StreamModel
 import com.example.app.domain.model.TopicModel
 import com.example.app.domain.repo.ChannelsRepository
+import javax.inject.Inject
 
-class ChannelsRepositoryImpl(private val api: ZulipApi) : ChannelsRepository {
+class ChannelsRepositoryImpl @Inject constructor(private val api: ZulipApi) : ChannelsRepository {
 
     override suspend fun getStreamsSubscriptions(): List<StreamModel> {
         return api.getStreamsSubscriptions().toDomain()

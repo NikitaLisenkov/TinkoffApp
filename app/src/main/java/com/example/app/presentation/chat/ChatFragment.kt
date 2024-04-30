@@ -1,5 +1,6 @@
 package com.example.app.presentation.chat
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
@@ -17,6 +18,7 @@ import com.example.app.presentation.chat.ChatViewModel.Action
 import com.example.app.presentation.chat.adapter.ChatAdapter
 import com.example.app.presentation.chat.model.ChatItem
 import com.example.app.presentation.chat.reactions.ReactionsDialog
+import com.example.app.utils.getApp
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -41,6 +43,11 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
             )
         }
     )
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        context.getApp().createChatComponent()?.inject(this)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -119,6 +126,11 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
                 )
             }
         }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        requireContext().getApp().clearChatComponent()
     }
 
     private fun render(state: ChatViewModel.State) {

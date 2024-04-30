@@ -1,11 +1,13 @@
 package com.example.app.presentation.channels
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -16,14 +18,19 @@ import com.example.app.presentation.channels.ChannelsViewModel.SelectedTab
 import com.example.app.presentation.channels.adapter.ChannelsAdapter
 import com.example.app.presentation.channels.model.ChannelsItem
 import com.example.app.presentation.chat.ChatFragment
+import com.example.app.utils.getApp
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import javax.inject.Inject
 
 class ChannelsFragment : Fragment(R.layout.fragment_channels) {
 
     private val binding by viewBinding(FragmentChannelsBinding::bind)
 
-    private val viewModel: ChannelsViewModel by viewModels()
+    @Inject
+    lateinit var factory: ViewModelProvider.Factory
+
+    private val viewModel: ChannelsViewModel by viewModels { factory }
 
     private val adapter = ChannelsAdapter(
         onChannelClick = {
@@ -35,6 +42,11 @@ class ChannelsFragment : Fragment(R.layout.fragment_channels) {
             openChat(it)
         }
     )
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        context.getApp().createChannelsComponent()?.inject(this)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -68,6 +80,11 @@ class ChannelsFragment : Fragment(R.layout.fragment_channels) {
             .flowWithLifecycle(lifecycle)
             .onEach { render(it) }
             .launchIn(viewLifecycleOwner.lifecycleScope)
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        requireContext().getApp().clearChannelsComponent()
     }
 
     private fun render(state: ChannelsViewModel.State) {

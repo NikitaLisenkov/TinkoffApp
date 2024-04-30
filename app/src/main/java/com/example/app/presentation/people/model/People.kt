@@ -10,6 +10,5 @@ data class People(
 
 enum class PeopleStatus {
     ONLINE,
-    IDLE,
     OFFLINE
 }

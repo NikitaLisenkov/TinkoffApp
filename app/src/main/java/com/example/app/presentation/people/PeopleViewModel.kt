@@ -2,7 +2,7 @@ package com.example.app.presentation.people
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.app.di.ServiceLocator
+import com.example.app.domain.repo.PeopleRepository
 import com.example.app.presentation.people.model.People
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -10,14 +10,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class PeopleViewModel : ViewModel() {
+class PeopleViewModel @Inject constructor(private val repo: PeopleRepository) : ViewModel() {
 
     private val _state: MutableStateFlow<State> = MutableStateFlow(State.Loading)
 
     val state: Flow<State> = _state
-
-    private val repo = ServiceLocator.peopleRepo
 
     init {
         sendAction(Action.LoadData)

@@ -1,5 +1,6 @@
 package com.example.app.presentation.people
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isGone
@@ -11,18 +12,29 @@ import androidx.lifecycle.lifecycleScope
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.app.R
 import com.example.app.databinding.FragmentPeopleBinding
+import com.example.app.di.ViewModelFactory
 import com.example.app.presentation.people.PeopleViewModel.Action
 import com.example.app.presentation.people.adapter.PeopleAdapter
+import com.example.app.utils.getApp
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import javax.inject.Inject
 
 class PeopleFragment : Fragment(R.layout.fragment_people) {
 
     private val binding: FragmentPeopleBinding by viewBinding(FragmentPeopleBinding::bind)
 
-    private val viewModel: PeopleViewModel by viewModels()
+    @Inject
+    lateinit var factory: ViewModelFactory
+
+    private val viewModel: PeopleViewModel by viewModels { factory }
 
     private val adapter = PeopleAdapter()
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        context.getApp().createPeopleComponent()?.inject(this)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -36,6 +48,11 @@ class PeopleFragment : Fragment(R.layout.fragment_people) {
             .flowWithLifecycle(lifecycle)
             .onEach { render(it) }
             .launchIn(viewLifecycleOwner.lifecycleScope)
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        requireContext().getApp().clearPeopleComponent()
     }
 
     private fun render(state: PeopleViewModel.State) {

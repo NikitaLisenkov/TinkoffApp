@@ -2,7 +2,7 @@ package com.example.app.presentation.channels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.app.di.ServiceLocator
+import com.example.app.domain.repo.ChannelsRepository
 import com.example.app.presentation.channels.model.ChannelsItem
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -18,13 +18,12 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ChannelsViewModel : ViewModel() {
+class ChannelsViewModel @Inject constructor(private val repo: ChannelsRepository) : ViewModel() {
 
     private val _state: MutableStateFlow<State> = MutableStateFlow(State.Loading)
     val state: Flow<State> = _state
-
-    private val repo = ServiceLocator.channelsRepo
 
     init {
         sendAction(

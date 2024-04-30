@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.app.Constants
 import com.example.app.data.network.model.MessageEvent
-import com.example.app.di.ServiceLocator
+import com.example.app.domain.repo.ChatRepository
 import com.example.app.presentation.chat.mapper.toChatItems
 import com.example.app.presentation.chat.model.ChatItem
 import com.example.app.presentation.chat.model.DateItem
@@ -19,20 +19,19 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ChatViewModel : ViewModel() {
+class ChatViewModel @Inject constructor(private val repo: ChatRepository) : ViewModel() {
 
     private val _messageList: MutableStateFlow<List<ChatItem>> = MutableStateFlow(emptyList())
     val messageList: StateFlow<List<ChatItem>> = _messageList.asStateFlow()
-
-    private val repository = ServiceLocator.chatRepo
 
     private var topicName: String = ""
     private var streamName: String = ""
 
     init {
         viewModelScope.launch {
-            repository.handleEvents(
+            repo.handleEvents(
                 onNewMessage = {
                     sendAction(
                         Action.OnNewMessage(it)
@@ -51,7 +50,11 @@ class ChatViewModel : ViewModel() {
 
     fun sendAction(action: Action) {
         when (action) {
-            is Action.LoadData -> loadMessages(streamName = action.streamName, topicName = action.topicName)
+            is Action.LoadData -> loadMessages(
+                streamName = action.streamName,
+                topicName = action.topicName
+            )
+
             is Action.SendMessage -> sendMessage(action.text)
             is Action.SendReaction -> sendReaction(action.msgId, action.emojiCode)
             is Action.OnNewMessage -> updateMessages(action.event)
@@ -62,7 +65,7 @@ class ChatViewModel : ViewModel() {
     private fun sendMessage(text: String) {
         viewModelScope.launch {
             try {
-                repository.sendMessage(
+                repo.sendMessage(
                     streamName = streamName,
                     topicName = topicName,
                     text = text
@@ -79,7 +82,7 @@ class ChatViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 // TODO: add emoji name to Reaction
-                repository.sendReaction(
+                repo.sendReaction(
                     messageId = msgId,
                     emojiCode = EmojiUtils.stringToUnicodeSequence(emojiCode),
                     emojiName = ""
@@ -98,7 +101,7 @@ class ChatViewModel : ViewModel() {
 
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val items = repository.getMessages(streamName = streamName, topicName = topicName)
+                val items = repo.getMessages(streamName = streamName, topicName = topicName)
                     .groupBy { DateUtils.convertMillisToDateStr(it.time) }
                     .flatMap { (date, messages) ->
                         listOf(DateItem(date)) + messages.toChatItems()

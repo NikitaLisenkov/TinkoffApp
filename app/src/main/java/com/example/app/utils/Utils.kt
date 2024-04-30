@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.setPadding
 import com.example.app.R
+import com.example.app.TinkoffApp
 import com.example.app.presentation.chat.model.Reaction
 import com.example.app.presentation.chat.view.EmojiView
 import com.example.app.presentation.chat.view.FlexboxLayout
@@ -42,3 +43,5 @@ fun FlexboxLayout.addReactions(reactions: List<Reaction>, onEmojiClick: (String)
         addButtonPlus()
     }
 }
+
+fun Context.getApp(): TinkoffApp = this.applicationContext as TinkoffApp

@@ -2,19 +2,20 @@ package com.example.app.presentation.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.app.di.ServiceLocator
+import com.example.app.domain.repo.ProfileRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 import kotlin.coroutines.cancellation.CancellationException
 
-class ProfileViewModel : ViewModel() {
+class ProfileViewModel @Inject constructor(
+    private val repo: ProfileRepository
+) : ViewModel() {
 
     private val _state: MutableStateFlow<State> = MutableStateFlow(State.Loading)
     val state: Flow<State> = _state
-
-    private val repo = ServiceLocator.profileRepo
 
     init {
         sendAction(Action.LoadData)

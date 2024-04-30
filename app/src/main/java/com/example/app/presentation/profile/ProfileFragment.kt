@@ -1,5 +1,6 @@
 package com.example.app.presentation.profile
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -13,15 +14,25 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
 import com.example.app.R
 import com.example.app.databinding.FragmentProfileBinding
-import com.example.app.presentation.profile.ProfileViewModel.Action
+import com.example.app.di.ViewModelFactory
+import com.example.app.utils.getApp
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import javax.inject.Inject
 
 class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
     private val binding by viewBinding(FragmentProfileBinding::bind)
 
-    private val viewModel: ProfileViewModel by viewModels()
+    @Inject
+    lateinit var factory: ViewModelFactory
+
+    private val viewModel: ProfileViewModel by viewModels { factory }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        context.getApp().createProfileComponent()?.inject(this)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -32,8 +43,13 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             .launchIn(viewLifecycleOwner.lifecycleScope)
 
         binding.layoutError.btnRetry.setOnClickListener {
-            viewModel.sendAction(Action.LoadData)
+            viewModel.sendAction(ProfileViewModel.Action.LoadData)
         }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        requireContext().getApp().clearProfileComponent()
     }
 
     private fun render(state: ProfileViewModel.State) {

@@ -6,9 +6,9 @@ import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.app.R
+import com.example.app.databinding.ActivityMainBinding
 import com.example.app.presentation.channels.ChannelsFragment
 import com.example.app.presentation.chat.ChatFragment
-import com.example.app.databinding.ActivityMainBinding
 import com.example.app.presentation.people.PeopleFragment
 import com.example.app.presentation.profile.ProfileFragment
 
@@ -52,7 +52,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             ?: R.id.channelsFragment
 
         supportFragmentManager.addOnBackStackChangedListener {
-            val isChatVisible = supportFragmentManager.findFragmentByTag(ChatFragment.TAG)?.isVisible
+            val isChatVisible =
+                supportFragmentManager.findFragmentByTag(ChatFragment.TAG)?.isVisible
             binding.bottomNavigationView.isGone = isChatVisible ?: false
         }
     }
