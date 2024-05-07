@@ -48,6 +48,10 @@ class PeopleFragment : Fragment(R.layout.fragment_people) {
             .flowWithLifecycle(lifecycle)
             .onEach { render(it) }
             .launchIn(viewLifecycleOwner.lifecycleScope)
+
+        binding.swipeRefresh.setOnRefreshListener {
+            viewModel.sendAction(Action.LoadData)
+        }
     }
 
     override fun onDetach() {
@@ -59,7 +63,7 @@ class PeopleFragment : Fragment(R.layout.fragment_people) {
         with(binding) {
             when (state) {
                 is PeopleViewModel.State.Loading -> {
-                    progress.isVisible = true
+                    swipeRefresh.isRefreshing = true
                     rvPeopleList.isGone = true
                     layoutError.root.isGone = true
                 }
@@ -67,14 +71,14 @@ class PeopleFragment : Fragment(R.layout.fragment_people) {
                 is PeopleViewModel.State.Content -> {
                     adapter.submitList(state.people)
                     rvPeopleList.isVisible = true
-                    progress.isGone = true
+                    swipeRefresh.isRefreshing = false
                     layoutError.root.isGone = true
                 }
 
                 is PeopleViewModel.State.Error -> {
                     layoutError.root.isVisible = true
                     rvPeopleList.isGone = true
-                    progress.isGone = true
+                    swipeRefresh.isRefreshing = false
                 }
             }
         }

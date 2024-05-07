@@ -6,19 +6,19 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.app.R
-import com.example.app.presentation.channels.model.ChannelsItem
+import com.example.app.presentation.channels.model.ChannelsItemUi
 import com.example.app.databinding.ItemChannelBinding
 import com.example.app.databinding.ItemTopicBinding
 
 class ChannelsAdapter(
-    private val onChannelClick: (ChannelsItem.Stream) -> Unit,
-    private val onTopicClick: (ChannelsItem.Topic) -> Unit
-) : ListAdapter<ChannelsItem, RecyclerView.ViewHolder>(ChannelDiffCallback()) {
+    private val onChannelClick: (ChannelsItemUi.StreamUi) -> Unit,
+    private val onTopicClick: (ChannelsItemUi.TopicUi) -> Unit
+) : ListAdapter<ChannelsItemUi, RecyclerView.ViewHolder>(ChannelDiffCallback()) {
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
-            is ChannelsItem.Stream -> CHANNEL_VIEW_TYPE
-            is ChannelsItem.Topic -> TOPIC_VIEW_TYPE
+            is ChannelsItemUi.StreamUi -> CHANNEL_VIEW_TYPE
+            is ChannelsItemUi.TopicUi -> TOPIC_VIEW_TYPE
         }
     }
 
@@ -29,7 +29,7 @@ class ChannelsAdapter(
                 ChannelViewHolder(view).apply {
                     itemView.setOnClickListener {
                         onChannelClick.invoke(
-                            getItem(adapterPosition) as ChannelsItem.Stream
+                            getItem(adapterPosition) as ChannelsItemUi.StreamUi
                         )
                     }
                 }
@@ -40,7 +40,7 @@ class ChannelsAdapter(
                 TopicViewHolder(view).apply {
                     itemView.setOnClickListener {
                         onTopicClick.invoke(
-                            getItem(adapterPosition) as ChannelsItem.Topic
+                            getItem(adapterPosition) as ChannelsItemUi.TopicUi
                         )
                     }
                 }
@@ -52,8 +52,8 @@ class ChannelsAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is ChannelViewHolder -> holder.bind(getItem(position) as ChannelsItem.Stream)
-            is TopicViewHolder -> holder.bind(getItem(position) as ChannelsItem.Topic)
+            is ChannelViewHolder -> holder.bind(getItem(position) as ChannelsItemUi.StreamUi)
+            is TopicViewHolder -> holder.bind(getItem(position) as ChannelsItemUi.TopicUi)
         }
     }
 
@@ -62,7 +62,7 @@ class ChannelsAdapter(
 
         private val binding = ItemChannelBinding.bind(itemView)
 
-        fun bind(item: ChannelsItem.Stream) {
+        fun bind(item: ChannelsItemUi.StreamUi) {
             binding.tvText.text = item.text
             binding.ivArrow.setImageResource(
                 if (item.isExpanded) R.drawable.ic_arrow_down_24 else R.drawable.ic_arrow_up_24
@@ -74,7 +74,7 @@ class ChannelsAdapter(
 
         private val binding = ItemTopicBinding.bind(itemView)
 
-        fun bind(item: ChannelsItem.Topic) {
+        fun bind(item: ChannelsItemUi.TopicUi) {
             binding.tvText.text = item.text
             binding.tvText.setBackgroundResource(item.backgroundColorRes)
         }

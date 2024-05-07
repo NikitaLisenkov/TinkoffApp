@@ -37,6 +37,19 @@ class EmojiView @JvmOverloads constructor(
             }
         }
 
+    var isEmojiSelected: Boolean = false
+        set(value) {
+            if (field != value) {
+                field = value
+                if (value) {
+                    bgPaint.color = context.getColor(R.color.emoji_view_selected)
+                } else {
+                    bgPaint.color = context.getColor(R.color.emoji_view_not_selected)
+                }
+                requestLayout()
+            }
+        }
+
     private var marginLeft = 0
     private var marginRight = 0
     private var marginTop = 0
@@ -57,7 +70,7 @@ class EmojiView @JvmOverloads constructor(
         }
 
     private val bgPaint = Paint().apply {
-        color = Color.parseColor("#3A3A3A")
+        color = context.getColor(R.color.emoji_view_not_selected)
     }
 
     private val textPaint = TextPaint().apply {

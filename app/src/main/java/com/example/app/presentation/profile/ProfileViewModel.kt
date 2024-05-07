@@ -3,12 +3,12 @@ package com.example.app.presentation.profile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.app.domain.repo.ProfileRepository
+import com.example.app.utils.runSuspendCatching
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.coroutines.cancellation.CancellationException
 
 class ProfileViewModel @Inject constructor(
     private val repo: ProfileRepository
@@ -30,20 +30,23 @@ class ProfileViewModel @Inject constructor(
     private fun loadData() {
         viewModelScope.launch {
             _state.update { State.Loading }
-            try {
-                val response = repo.getOwnUserProfile()
-                _state.update {
-                    State.Content(
-                        avatarUrl = response.avatarUrl,
-                        name = response.fullName,
-                        isOnline = response.isActive
-                    )
+            runSuspendCatching(
+                action = { repo.getOwnUserProfile() },
+                onSuccess = { response ->
+                    _state.update {
+                        State.Content(
+                            avatarUrl = response.avatarUrl,
+                            name = response.fullName,
+                            isOnline = response.isActive
+                        )
+                    }
+                },
+                onError = {
+                    _state.update {
+                        State.Error
+                    }
                 }
-            } catch (e: CancellationException) {
-                throw e
-            } catch (e: Throwable) {
-                State.Error
-            }
+            )
         }
     }
 

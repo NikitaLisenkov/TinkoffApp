@@ -9,36 +9,42 @@ import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.app.R
 import com.example.app.databinding.FragmentChatBinding
 import com.example.app.presentation.chat.ChatViewModel.Action
 import com.example.app.presentation.chat.adapter.ChatAdapter
-import com.example.app.presentation.chat.model.ChatItem
+import com.example.app.presentation.chat.model.ChatItemUi
 import com.example.app.presentation.chat.reactions.ReactionsDialog
 import com.example.app.utils.getApp
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import javax.inject.Inject
 
 class ChatFragment : Fragment(R.layout.fragment_chat) {
 
     private val binding: FragmentChatBinding by viewBinding(FragmentChatBinding::bind)
 
-    private val viewModel: ChatViewModel by viewModels()
+    @Inject
+    lateinit var factory: ViewModelProvider.Factory
+
+    private val viewModel: ChatViewModel by viewModels { factory }
 
     private val adapter: ChatAdapter = ChatAdapter(
         onAddReactionClick = {
             onAddReactionsClick(it)
         },
-        onEmojiClick = { emojiCode, msgId ->
+        onEmojiClick = { emojiName, msgId ->
             viewModel.sendAction(
                 Action.SendReaction(
                     msgId = msgId,
-                    emojiCode = emojiCode
+                    emojiName = emojiName
                 )
             )
         }
@@ -74,7 +80,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
         setupInput()
         setupResultListener()
 
-        viewModel.messageList
+        viewModel.chatItemsFlow
             .map { state -> ChatViewModel.State.Content(items = state) }
             .flowWithLifecycle(lifecycle)
             .onEach { render(it) }
@@ -83,6 +89,13 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
 
     private fun setupRecyclerView() {
         binding.rvMessageList.adapter = adapter
+        val manager = (binding.rvMessageList.layoutManager as LinearLayoutManager)
+        binding.rvMessageList.setOnScrollChangeListener { v, _, _, _, _ ->
+            val firstItemPosition = manager.findFirstVisibleItemPosition()
+            if (firstItemPosition < 5) {
+                viewModel.sendAction(Action.LoadNextPage)
+            }
+        }
     }
 
     private fun setupInput() {
@@ -107,7 +120,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
         }
     }
 
-    private fun onAddReactionsClick(item: ChatItem) {
+    private fun onAddReactionsClick(item: ChatItemUi) {
         ReactionsDialog()
             .apply { arguments = bundleOf(ReactionsDialog.ARG_MSG_ID to item.id) }
             .show(parentFragmentManager, null)
@@ -117,12 +130,12 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
         parentFragmentManager.setFragmentResultListener(
             ReactionsDialog.REQUEST_KEY,
             this
-        ) { requestKey, result ->
+        ) { _, result ->
             val msgId = result.getLong(ReactionsDialog.RESULT_KEY_MSG_ID, -1)
-            val emojiCode = result.getString(ReactionsDialog.RESULT_KEY_EMOJI)
-            if (msgId != -1L && emojiCode != null) {
+            val emojiName = result.getString(ReactionsDialog.RESULT_KEY_EMOJI_NAME)
+            if (msgId != -1L && emojiName != null) {
                 viewModel.sendAction(
-                    Action.SendReaction(msgId, emojiCode)
+                    Action.SendReaction(msgId, emojiName)
                 )
             }
         }
@@ -147,12 +160,17 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
                     progress.isGone = true
                     rvMessageList.isVisible = true
 
-                    val previousSize = adapter.currentList.size
+                    val previousList = adapter.currentList
+                    val previousSize = previousList.size
                     adapter.submitList(state.items) {
                         val position = adapter.currentList.size - 1
                         when {
                             previousSize == 0 -> {
                                 rvMessageList.scrollToPosition(position)
+                            }
+
+                            previousList.lastOrNull()?.id == state.items.lastOrNull()?.id -> {
+                                return@submitList
                             }
 
                             previousSize != adapter.currentList.size -> {

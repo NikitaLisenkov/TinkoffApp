@@ -1,7 +1,7 @@
 package com.example.app.presentation.chat.model
 
-data class DateItem(
+data class DateItemUi(
     val date: String
-) : ChatItem {
+) : ChatItemUi {
     override val id: Long = date.hashCode().toLong()
 }

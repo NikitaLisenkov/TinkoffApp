@@ -3,6 +3,7 @@ package com.example.app
 import android.app.Application
 import com.example.app.di.app.AppComponent
 import com.example.app.di.app.DaggerAppComponent
+import com.example.app.di.app.modules.AppModule
 import com.example.app.di.channels.ChannelsComponent
 import com.example.app.di.channels.DaggerChannelsComponent
 import com.example.app.di.chat.ChatComponent
@@ -24,7 +25,9 @@ class TinkoffApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        appComponent = DaggerAppComponent.create()
+        appComponent = DaggerAppComponent.builder()
+            .appModule(AppModule(this))
+            .build()
     }
 
     fun createProfileComponent(): ProfileComponent? {

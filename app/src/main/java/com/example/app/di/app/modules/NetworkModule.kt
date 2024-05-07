@@ -1,6 +1,7 @@
-package com.example.app.di.app
+package com.example.app.di.app.modules
 
 import com.example.app.data.network.ZulipApi
+import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import okhttp3.Credentials
@@ -61,5 +62,9 @@ class NetworkModule {
     @Provides
     @Singleton
     fun zulipApi(retrofit: Retrofit): ZulipApi = retrofit.create(ZulipApi::class.java)
+
+    @Provides
+    @Singleton
+    fun gson(): Gson = Gson()
 
 }

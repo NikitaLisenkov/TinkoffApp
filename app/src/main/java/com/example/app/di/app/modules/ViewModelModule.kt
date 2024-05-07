@@ -1,4 +1,4 @@
-package com.example.app.di.app
+package com.example.app.di.app.modules
 
 import androidx.lifecycle.ViewModelProvider
 import com.example.app.di.ViewModelFactory
@@ -9,6 +9,6 @@ import dagger.Module
 abstract class ViewModelModule {
 
     @Binds
-    abstract fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory
+    abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
 }

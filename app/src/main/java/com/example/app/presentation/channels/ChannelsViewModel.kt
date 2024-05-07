@@ -2,30 +2,49 @@ package com.example.app.presentation.channels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.app.domain.model.StreamModel
 import com.example.app.domain.repo.ChannelsRepository
-import com.example.app.presentation.channels.model.ChannelsItem
-import kotlinx.coroutines.CancellationException
+import com.example.app.presentation.channels.mapper.toUi
+import com.example.app.presentation.channels.model.ChannelsItemUi
+import com.example.app.utils.runSuspendCatching
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class ChannelsViewModel @Inject constructor(private val repo: ChannelsRepository) : ViewModel() {
+@OptIn(ExperimentalCoroutinesApi::class)
+class ChannelsViewModel @Inject constructor(
+    private val repo: ChannelsRepository
+) : ViewModel() {
 
-    private val _state: MutableStateFlow<State> = MutableStateFlow(State.Loading)
+    private val _state: MutableStateFlow<State> = MutableStateFlow(
+        State.Loading(SelectedTab.SUBSCRIBED)
+    )
     val state: Flow<State> = _state
 
     init {
+        _state.flatMapLatest {
+            when (it.selectedTab) {
+                SelectedTab.SUBSCRIBED -> repo.getAllStreamsWithTopicsFlow(onlySubscribed = true)
+                SelectedTab.ALL_STREAMS -> repo.getAllStreamsWithTopicsFlow(onlySubscribed = false)
+            }
+        }.onEach { streams ->
+            sendAction(
+                Action.UpdateStreams(streams)
+            )
+        }.launchIn(viewModelScope)
+
         sendAction(
             Action.LoadData(SelectedTab.SUBSCRIBED)
         )
@@ -34,8 +53,9 @@ class ChannelsViewModel @Inject constructor(private val repo: ChannelsRepository
     fun sendAction(action: Action) {
         when (action) {
             is Action.LoadData -> loadData(action.tab)
-            is Action.onSubscribedClick -> loadData(SelectedTab.SUBSCRIBED)
-            is Action.onAllStreamsClick -> loadData(SelectedTab.ALL_STREAMS)
+            is Action.OnSubscribedClick -> loadData(SelectedTab.SUBSCRIBED)
+            is Action.OnAllStreamsClick -> loadData(SelectedTab.ALL_STREAMS)
+            is Action.UpdateStreams -> updateStreams(action.streams)
             is Action.OnSearchClick -> emitSearch(action.text)
             is Action.OnChannelClick -> toggleChannel(action.item)
         }
@@ -43,41 +63,28 @@ class ChannelsViewModel @Inject constructor(private val repo: ChannelsRepository
 
     private fun loadData(tab: SelectedTab) {
         viewModelScope.launch(Dispatchers.IO) {
-            _state.update { State.Loading }
-            try {
-                val response = when (tab) {
-                    SelectedTab.SUBSCRIBED -> repo.getStreamsSubscriptions()
-                    SelectedTab.ALL_STREAMS -> repo.getAllStreams()
-                }
-
-                val streams = mutableListOf<ChannelsItem.Stream>()
-
-                response.map {
-                    launch {
-                        val topics = loadTopics(it.streamId, it.name)
-                        streams.add(
-                            ChannelsItem.Stream(
-                                id = it.streamId,
-                                text = it.name,
-                                isExpanded = false,
-                                topics = topics
-                            )
-                        )
+            _state.update { State.Loading(tab) }
+            runSuspendCatching(
+                action = {
+                    when (tab) {
+                        SelectedTab.SUBSCRIBED -> repo.fetchStreamsWithTopics(onlySubscribed = true)
+                        SelectedTab.ALL_STREAMS -> repo.fetchStreamsWithTopics(onlySubscribed = false)
                     }
-                }.joinAll()
+                },
+                onSuccess = {},
+                onError = { _state.value = State.Error(tab) }
+            )
+        }
+    }
 
-                _state.update {
-                    State.Content(
-                        items = streams,
-                        visibleItems = streams,
-                        selectedTab = tab
-                    )
-                }
-            } catch (e: CancellationException) {
-                throw e
-            } catch (e: Throwable) {
-                State.Error
-            }
+    private fun updateStreams(streams: List<StreamModel>) {
+        val items = streams.toUi()
+        _state.update {
+            State.Content(
+                visibleItems = items,
+                items = items,
+                selectedTab = it.selectedTab
+            )
         }
     }
 
@@ -99,86 +106,55 @@ class ChannelsViewModel @Inject constructor(private val repo: ChannelsRepository
         }
     }
 
-    private suspend fun search(query: String): State {
-        return try {
-            val currentState = _state.value as? State.Content ?: return _state.value
-            _state.value = State.Loading
+    private fun search(query: String): State {
+        val currentState = _state.value as? State.Content ?: return _state.value
+        _state.update { State.Loading(it.selectedTab) }
 
-            val newItems = if (query.isBlank()) {
-                currentState.items
-            } else {
-                currentState.items.filter { channel ->
-                    channel.text.contains(query, ignoreCase = true)
-                }
+        val newItems = if (query.isBlank()) {
+            currentState.items
+        } else {
+            currentState.items.filter { channel ->
+                channel.text.contains(query, ignoreCase = true)
             }
-
-            currentState.copy(visibleItems = newItems)
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: Throwable) {
-            State.Error
         }
+
+        return currentState.copy(visibleItems = newItems)
     }
 
-    private fun toggleChannel(item: ChannelsItem.Stream) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val currentState = _state.value as? State.Content ?: return@launch
-
-            var topicsToRemove: List<ChannelsItem.Topic> = emptyList()
-
-            val updatedItems = currentState.visibleItems.flatMap { currentItem ->
-                if (currentItem.id == item.id && currentItem is ChannelsItem.Stream) {
-                    if (currentItem.isExpanded) {
-                        topicsToRemove = currentItem.topics
-                        listOf(currentItem.copy(isExpanded = false))
-                    } else {
-                        listOf(currentItem.copy(isExpanded = true)) + currentItem.topics
-                    }
-                } else {
-                    listOf(currentItem)
-                }
-            }
-
-            _state.value = currentState.copy(visibleItems = updatedItems - topicsToRemove.toSet())
-        }
-    }
-
-    private suspend fun loadTopics(streamId: Int, streamName: String): List<ChannelsItem.Topic> {
-        val response = try {
-            repo.getTopics(streamId)
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: Throwable) {
-            emptyList()
-        }
-        return response.map {
-            ChannelsItem.Topic(
-                id = it.maxId,
-                text = it.name,
-                streamName = streamName,
-                backgroundColorRes = 0
+    private fun toggleChannel(item: ChannelsItemUi.StreamUi) {
+        viewModelScope.launch {
+            repo.updateStream(
+                streamId = item.id,
+                isExpanded = !item.isExpanded
             )
         }
     }
 
     sealed interface State {
-        data object Loading : State
+        val selectedTab: SelectedTab
 
-        data class Content(
-            val visibleItems: List<ChannelsItem>,
-            val items: List<ChannelsItem>,
-            val selectedTab: SelectedTab
+        data class Loading(
+            override val selectedTab: SelectedTab
         ) : State
 
-        data object Error : State
+        data class Content(
+            val visibleItems: List<ChannelsItemUi>,
+            val items: List<ChannelsItemUi>,
+            override val selectedTab: SelectedTab
+        ) : State
+
+        data class Error(
+            override val selectedTab: SelectedTab
+        ) : State
     }
 
     sealed interface Action {
         data class LoadData(val tab: SelectedTab) : Action
-        data object onSubscribedClick : Action
-        data object onAllStreamsClick : Action
+        data class UpdateStreams(val streams: List<StreamModel>) : Action
+        data object OnSubscribedClick : Action
+        data object OnAllStreamsClick : Action
         data class OnSearchClick(val text: String) : Action
-        data class OnChannelClick(val item: ChannelsItem.Stream) : Action
+        data class OnChannelClick(val item: ChannelsItemUi.StreamUi) : Action
     }
 
     enum class SelectedTab {

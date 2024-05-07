@@ -58,7 +58,10 @@ data class MessageEvent(
     val topicName: String,
 
     @SerializedName("display_recipient")
-    val streamName: String
+    val streamName: String,
+
+    @SerializedName("timestamp")
+    val timestamp: Long
 )
 
 enum class EventType {

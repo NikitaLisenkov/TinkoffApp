@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
@@ -16,7 +17,7 @@ import com.example.app.databinding.FragmentChannelsBinding
 import com.example.app.presentation.channels.ChannelsViewModel.Action
 import com.example.app.presentation.channels.ChannelsViewModel.SelectedTab
 import com.example.app.presentation.channels.adapter.ChannelsAdapter
-import com.example.app.presentation.channels.model.ChannelsItem
+import com.example.app.presentation.channels.model.ChannelsItemUi
 import com.example.app.presentation.chat.ChatFragment
 import com.example.app.utils.getApp
 import kotlinx.coroutines.flow.launchIn
@@ -54,18 +55,18 @@ class ChannelsFragment : Fragment(R.layout.fragment_channels) {
         binding.btnSubscribed.tvText.text = "Subscribed"
         binding.btnAllStreams.tvText.text = "All streams"
 
-        binding.ivSearch.setOnClickListener {
+        binding.etSearch.addTextChangedListener { text ->
             viewModel.sendAction(
-                Action.OnSearchClick(binding.etSearch.text.toString())
+                Action.OnSearchClick(text?.toString().orEmpty())
             )
         }
 
         binding.btnSubscribed.root.setOnClickListener {
-            viewModel.sendAction(Action.onSubscribedClick)
+            viewModel.sendAction(Action.OnSubscribedClick)
         }
 
         binding.btnAllStreams.root.setOnClickListener {
-            viewModel.sendAction(Action.onAllStreamsClick)
+            viewModel.sendAction(Action.OnAllStreamsClick)
         }
 
         binding.layoutError.btnRetry.setOnClickListener {
@@ -125,7 +126,7 @@ class ChannelsFragment : Fragment(R.layout.fragment_channels) {
         }
     }
 
-    private fun openChat(item: ChannelsItem.Topic) {
+    private fun openChat(item: ChannelsItemUi.TopicUi) {
         parentFragmentManager.beginTransaction()
             .replace(
                 R.id.fragmentContainerView,

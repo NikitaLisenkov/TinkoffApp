@@ -8,23 +8,23 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.app.R
 import com.example.app.utils.addReactions
-import com.example.app.presentation.chat.model.ChatItem
-import com.example.app.presentation.chat.model.DateItem
-import com.example.app.presentation.chat.model.MessageIncoming
-import com.example.app.presentation.chat.model.MessageOutgoing
+import com.example.app.presentation.chat.model.ChatItemUi
+import com.example.app.presentation.chat.model.DateItemUi
+import com.example.app.presentation.chat.model.MessageIncomingUi
+import com.example.app.presentation.chat.model.MessageOutgoingUi
 import com.example.app.presentation.chat.view.FlexboxLayout
 import com.example.app.presentation.chat.view.MessageViewGroup
 
 class ChatAdapter(
-    private val onAddReactionClick: (ChatItem) -> Unit,
-    private val onEmojiClick: (emojiCode: String, msgId: Long) -> Unit
-) : ListAdapter<ChatItem, RecyclerView.ViewHolder>(ChatDiffCallback()) {
+    private val onAddReactionClick: (ChatItemUi) -> Unit,
+    private val onEmojiClick: (emojiName: String, msgId: Long) -> Unit
+) : ListAdapter<ChatItemUi, RecyclerView.ViewHolder>(ChatDiffCallback()) {
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
-            is MessageIncoming -> MESSAGE_INCOMING_VIEW_TYPE
-            is MessageOutgoing -> MESSAGE_OUTGOING_VIEW_TYPE
-            is DateItem -> DATE_VIEW_TYPE
+            is MessageIncomingUi -> MESSAGE_INCOMING_VIEW_TYPE
+            is MessageOutgoingUi -> MESSAGE_OUTGOING_VIEW_TYPE
+            is DateItemUi -> DATE_VIEW_TYPE
         }
     }
 
@@ -78,26 +78,26 @@ class ChatAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is DateViewHolder -> holder.bind(getItem(position) as DateItem)
-            is MessageIncomingViewHolder -> holder.bind(getItem(position) as MessageIncoming)
-            is MessageOutgoingViewHolder -> holder.bind(getItem(position) as MessageOutgoing)
+            is DateViewHolder -> holder.bind(getItem(position) as DateItemUi)
+            is MessageIncomingViewHolder -> holder.bind(getItem(position) as MessageIncomingUi)
+            is MessageOutgoingViewHolder -> holder.bind(getItem(position) as MessageOutgoingUi)
         }
     }
 
     class DateViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val txDate: TextView = itemView.findViewById(R.id.txDate)
 
-        fun bind(dateItem: DateItem) {
+        fun bind(dateItem: DateItemUi) {
             txDate.text = dateItem.date
         }
     }
 
     class MessageIncomingViewHolder(
         itemView: View,
-        private val onEmojiClick: (emojiCode: String, msgId: Long) -> Unit
+        private val onEmojiClick: (emojiName: String, msgId: Long) -> Unit
     ) : RecyclerView.ViewHolder(itemView) {
 
-        var item: MessageIncoming? = null
+        var item: MessageIncomingUi? = null
 
         private val messageView = itemView as MessageViewGroup
         private val avatarImageView = messageView.avatarImageView
@@ -106,7 +106,7 @@ class ChatAdapter(
 
         val reactionsLayout = messageView.reactionsLayout
 
-        fun bind(msgIn: MessageIncoming) {
+        fun bind(msgIn: MessageIncomingUi) {
             item = msgIn
             avatarImageView.setImageResource(R.drawable.ic_darrel)
             nameTextView.text = msgIn.text
@@ -114,8 +114,8 @@ class ChatAdapter(
             reactionsLayout.removeAllViews()
             reactionsLayout.addReactions(
                 reactions = msgIn.reactions,
-                onEmojiClick = { emojiCode ->
-                    onEmojiClick.invoke(emojiCode, msgIn.id)
+                onEmojiClick = { emojiName ->
+                    onEmojiClick.invoke(emojiName, msgIn.id)
                 }
             )
         }
@@ -123,23 +123,23 @@ class ChatAdapter(
 
     class MessageOutgoingViewHolder(
         itemView: View,
-        private val onEmojiClick: (emojiCode: String, msgId: Long) -> Unit
+        private val onEmojiClick: (emojiName: String, msgId: Long) -> Unit
     ) : RecyclerView.ViewHolder(itemView) {
 
-        var item: MessageOutgoing? = null
+        var item: MessageOutgoingUi? = null
 
         private val txMessageOutgoing: TextView = itemView.findViewById(R.id.txMessageOutgoing)
 
         val reactFlexbox: FlexboxLayout = itemView.findViewById(R.id.reactFlexbox)
 
-        fun bind(msgOut: MessageOutgoing) {
+        fun bind(msgOut: MessageOutgoingUi) {
             item = msgOut
             txMessageOutgoing.text = msgOut.text
             reactFlexbox.removeAllViews()
             reactFlexbox.addReactions(
                 reactions = msgOut.reactions,
-                onEmojiClick = { emojiCode ->
-                    onEmojiClick.invoke(emojiCode, msgOut.id)
+                onEmojiClick = { emojiName ->
+                    onEmojiClick.invoke(emojiName, msgOut.id)
                 }
             )
         }

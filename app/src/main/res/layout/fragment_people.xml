@@ -7,19 +7,19 @@
     android:background="@color/black"
     tools:context=".presentation.people.PeopleFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvPeopleList"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/item_people" />
+        android:layout_height="match_parent">
 
-    <ProgressBar
-        android:id="@+id/progress"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_gravity="center" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_people_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_people" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <include
         android:id="@+id/layout_error"

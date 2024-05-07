@@ -2,21 +2,20 @@ package com.example.app.presentation.channels.model
 
 import androidx.annotation.DrawableRes
 
-sealed interface ChannelsItem {
-    val id: Int
+sealed interface ChannelsItemUi {
+    val id: Long
     val text: String
 
-    data class Stream(
-        override val id: Int,
+    data class StreamUi(
+        override val id: Long,
         override val text: String,
         val isExpanded: Boolean,
-        val topics: List<Topic>
-    ) : ChannelsItem
+    ) : ChannelsItemUi
 
-    data class Topic(
-        override val id: Int,
+    data class TopicUi(
+        override val id: Long,
         override val text: String,
         val streamName: String,
         @DrawableRes val backgroundColorRes: Int
-    ) : ChannelsItem
+    ) : ChannelsItemUi
 }

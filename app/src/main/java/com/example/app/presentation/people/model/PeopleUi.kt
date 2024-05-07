@@ -1,6 +1,6 @@
 package com.example.app.presentation.people.model
 
-data class People(
+data class PeopleUi(
     val id: Long,
     val avatarUrl: String?,
     val fullName: String,

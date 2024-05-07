@@ -8,9 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.app.R
 import com.example.app.databinding.ItemPeopleBinding
-import com.example.app.presentation.people.model.People
+import com.example.app.presentation.people.model.PeopleUi
 
-class PeopleAdapter : ListAdapter<People, PeopleAdapter.PeopleViewHolder>(
+class PeopleAdapter : ListAdapter<PeopleUi, PeopleAdapter.PeopleViewHolder>(
     PeopleDiffCallback()
 ) {
 
@@ -28,7 +28,7 @@ class PeopleAdapter : ListAdapter<People, PeopleAdapter.PeopleViewHolder>(
 
         private val binding = ItemPeopleBinding.bind(itemView)
 
-        fun bind(person: People) {
+        fun bind(person: PeopleUi) {
             binding.ivPeopleAvatar.setImageResource(R.drawable.ic_darrel)
             binding.tvPeopleEmail.text = person.email
             binding.tvPeopleName.text = person.fullName

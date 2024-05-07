@@ -2,15 +2,14 @@ package com.example.app.data.network
 
 import com.example.app.data.network.model.EventRegisterQueueResponse
 import com.example.app.data.network.model.EventResponse
-import com.example.app.data.network.model.UsersResponse
+import com.example.app.data.network.model.GetUserPresenceResponse
 import com.example.app.data.network.model.MessagesResponse
 import com.example.app.data.network.model.OwnProfileResponse
+import com.example.app.data.network.model.ReactionResponse
 import com.example.app.data.network.model.StreamsResponse
 import com.example.app.data.network.model.TopicsResponse
-import com.example.app.data.network.model.GetUserPresenceResponse
 import com.example.app.data.network.model.UserResponse
-import com.example.app.data.network.model.ReactionResponse
-import com.example.app.data.network.model.SendMessageResponse
+import com.example.app.data.network.model.UsersResponse
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -50,7 +49,7 @@ interface ZulipApi {
         @Query("to") streamName: String,
         @Query("content") content: String,
         @Query("topic") topicName: String,
-    ): SendMessageResponse
+    )
 
     @DELETE("messages/{message_id}/reactions")
     suspend fun deleteEmoji(
@@ -61,7 +60,6 @@ interface ZulipApi {
     @POST("messages/{message_id}/reactions")
     suspend fun addEmoji(
         @Path("message_id") messageId: Long,
-        @Query("emoji_code") emojiCode: String,
         @Query("emoji_name") emojiName: String
     ): ReactionResponse
 
@@ -73,7 +71,7 @@ interface ZulipApi {
 
     @GET("users/me/{stream_id}/topics")
     suspend fun getTopics(
-        @Path("stream_id") streamId: Int
+        @Path("stream_id") streamId: Long
     ): TopicsResponse
 
     @POST("register")
