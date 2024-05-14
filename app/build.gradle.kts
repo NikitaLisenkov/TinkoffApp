@@ -14,6 +14,8 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildFeatures {
@@ -30,11 +32,15 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
+    }
+    testOptions {
+        unitTests.all { it.useJUnitPlatform() }
+        animationsDisabled = true
     }
 }
 
@@ -66,4 +72,25 @@ dependencies {
     ksp("androidx.room:room-compiler:2.6.1")
     implementation("androidx.room:room-runtime:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
+
+    implementation("androidx.test:rules:1.5.0")
+
+    testImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+
+    testImplementation("io.kotest:kotest-runner-junit5:5.8.1")
+    testImplementation("io.kotest:kotest-assertions-core:5.8.1")
+    testImplementation("io.kotest:kotest-property:5.8.1")
+
+    androidTestImplementation("org.hamcrest:hamcrest:2.2")
+
+    androidTestImplementation("com.kaspersky.android-components:kaspresso:1.5.5")
+
+    androidTestImplementation("androidx.test.espresso:espresso-intents:3.5.1")
+
+    debugImplementation("androidx.test:core:1.5.0")
+    androidTestImplementation("org.apache.httpcomponents:httpclient-android:4.3.5.1")
+    androidTestImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2") {
+        exclude(group = "org.apache.httpcomponents", module = "httpclient")
+    }
 }
