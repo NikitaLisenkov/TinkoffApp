@@ -12,7 +12,7 @@
     <color name="color_cyan">#2A9D8F</color>
     <color name="color_yellow">#E9C46A</color>
     <color name="color_offline">#555555</color>
-    <color name="gray_channels">#1E1E1E</color>
+    <color name="gray_toolbar">#1E1E1E</color>
     <color name="people_user_full_name">#FAFAFA</color>
 
     <!--EmojiView-->

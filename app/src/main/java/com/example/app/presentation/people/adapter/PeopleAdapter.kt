@@ -10,13 +10,19 @@ import com.example.app.R
 import com.example.app.databinding.ItemPeopleBinding
 import com.example.app.presentation.people.model.PeopleUi
 
-class PeopleAdapter : ListAdapter<PeopleUi, PeopleAdapter.PeopleViewHolder>(
+class PeopleAdapter(
+    private val onUserClick: (PeopleUi) -> Unit
+) : ListAdapter<PeopleUi, PeopleAdapter.PeopleViewHolder>(
     PeopleDiffCallback()
 ) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PeopleViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_people, parent, false)
-        return PeopleViewHolder(view)
+        return PeopleViewHolder(view).apply {
+            itemView.setOnClickListener {
+                onUserClick.invoke(getItem(adapterPosition))
+            }
+        }
     }
 
     override fun onBindViewHolder(holder: PeopleViewHolder, position: Int) {

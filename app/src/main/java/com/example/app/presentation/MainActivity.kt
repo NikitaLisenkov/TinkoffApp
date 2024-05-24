@@ -11,6 +11,7 @@ import com.example.app.presentation.channels.ChannelsFragment
 import com.example.app.presentation.chat.ChatFragment
 import com.example.app.presentation.people.PeopleFragment
 import com.example.app.presentation.profile.ProfileFragment
+import com.example.app.presentation.profile.user_details.UserDetailsInfoFragment
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
@@ -52,9 +53,10 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             ?: R.id.channelsFragment
 
         supportFragmentManager.addOnBackStackChangedListener {
-            val isChatVisible =
-                supportFragmentManager.findFragmentByTag(ChatFragment.TAG)?.isVisible
-            binding.bottomNavigationView.isGone = isChatVisible ?: false
+            val currentFragment =
+                supportFragmentManager.findFragmentById(R.id.fragmentContainerView)
+            binding.bottomNavigationView.isGone =
+                currentFragment is ChatFragment || currentFragment is UserDetailsInfoFragment
         }
     }
 

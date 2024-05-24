@@ -46,16 +46,16 @@ fun FlexboxLayout.addReactions(reactions: List<ReactionUi>, onEmojiClick: (Strin
 fun Context.getApp(): TinkoffApp = this.applicationContext as TinkoffApp
 
 suspend fun <T> runSuspendCatching(
+    onSuccess: suspend (T) -> Unit = {},
+    onError: () -> Unit = {},
     action: suspend () -> T,
-    onSuccess: suspend (T) -> Unit,
-    onError: () -> Unit
-) {
-    try {
-        val result = action()
-        onSuccess.invoke(result)
-    } catch (e: CancellationException) {
-        throw e
-    } catch (e: Throwable) {
-        onError.invoke()
-    }
+): T? = try {
+    val result = action()
+    onSuccess.invoke(result)
+    result
+} catch (e: CancellationException) {
+    throw e
+} catch (e: Throwable) {
+    onError.invoke()
+    null
 }

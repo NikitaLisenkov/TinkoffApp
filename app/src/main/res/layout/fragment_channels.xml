@@ -11,7 +11,7 @@
         android:id="@+id/view_bg"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/gray_channels"
+        android:background="@color/gray_toolbar"
         app:layout_constraintBottom_toBottomOf="@id/barrier"
         app:layout_constraintTop_toTopOf="parent" />
 
