@@ -9,20 +9,15 @@ import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 
-@Module(includes = [ProfileModule.Bindings::class])
-class ProfileModule {
+@Module
+interface ProfileModule {
+    @Binds
+    @ProfileScope
+    fun profileRepository(profileRepositoryImpl: ProfileRepositoryImpl): ProfileRepository
 
-    @Module
-    interface Bindings {
-
-        @Binds
-        @ProfileScope
-        fun profileRepository(profileRepositoryImpl: ProfileRepositoryImpl): ProfileRepository
-
-        @ProfileScope
-        @Binds
-        @IntoMap
-        @ViewModelKey(ProfileViewModel::class)
-        fun bindViewModel(profileViewModel: ProfileViewModel): ViewModel
-    }
+    @ProfileScope
+    @Binds
+    @IntoMap
+    @ViewModelKey(ProfileViewModel::class)
+    fun bindProfileViewModel(profileViewModel: ProfileViewModel): ViewModel
 }

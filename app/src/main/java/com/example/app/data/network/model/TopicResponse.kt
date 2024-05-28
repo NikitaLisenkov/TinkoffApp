@@ -9,7 +9,7 @@ data class TopicsResponse(
 
 data class TopicResponse(
     @SerializedName("max_id")
-    val maxId: Int,
+    val maxId: Long,
     @SerializedName("name")
     val name: String,
 )

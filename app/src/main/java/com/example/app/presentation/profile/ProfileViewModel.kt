@@ -1,50 +1,16 @@
 package com.example.app.presentation.profile
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.example.app.domain.repo.ProfileRepository
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
+import com.example.app.presentation.base.BaseViewModel
 import javax.inject.Inject
-import kotlin.coroutines.cancellation.CancellationException
 
 class ProfileViewModel @Inject constructor(
-    private val repo: ProfileRepository
-) : ViewModel() {
-
-    private val _state: MutableStateFlow<State> = MutableStateFlow(State.Loading)
-    val state: Flow<State> = _state
+    override val reducer: ProfileReducer
+) : BaseViewModel<ProfileViewModel.State, ProfileViewModel.Action>(
+    initState = State.Loading
+) {
 
     init {
         sendAction(Action.LoadData)
-    }
-
-    fun sendAction(action: Action) {
-        when (action) {
-            Action.LoadData -> loadData()
-        }
-    }
-
-    private fun loadData() {
-        viewModelScope.launch {
-            _state.update { State.Loading }
-            try {
-                val response = repo.getOwnUserProfile()
-                _state.update {
-                    State.Content(
-                        avatarUrl = response.avatarUrl,
-                        name = response.fullName,
-                        isOnline = response.isActive
-                    )
-                }
-            } catch (e: CancellationException) {
-                throw e
-            } catch (e: Throwable) {
-                State.Error
-            }
-        }
     }
 
     sealed interface State {

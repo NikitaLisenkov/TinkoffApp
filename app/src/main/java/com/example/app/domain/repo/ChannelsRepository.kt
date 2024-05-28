@@ -1,10 +1,10 @@
 package com.example.app.domain.repo
 
 import com.example.app.domain.model.StreamModel
-import com.example.app.domain.model.TopicModel
+import kotlinx.coroutines.flow.Flow
 
 interface ChannelsRepository {
-    suspend fun getStreamsSubscriptions(): List<StreamModel>
-    suspend fun getAllStreams(): List<StreamModel>
-    suspend fun getTopics(streamId: Int): List<TopicModel>
+    suspend fun fetchStreamsWithTopics(onlySubscribed: Boolean)
+    fun getAllStreamsWithTopicsFlow(onlySubscribed: Boolean): Flow<List<StreamModel>>
+    suspend fun updateStream(streamId: Long, isExpanded: Boolean)
 }

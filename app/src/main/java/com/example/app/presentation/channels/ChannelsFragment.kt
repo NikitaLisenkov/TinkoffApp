@@ -3,20 +3,24 @@ package com.example.app.presentation.channels
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import android.widget.LinearLayout
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.DividerItemDecoration
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.app.R
 import com.example.app.databinding.FragmentChannelsBinding
 import com.example.app.presentation.channels.ChannelsViewModel.Action
 import com.example.app.presentation.channels.ChannelsViewModel.SelectedTab
+import com.example.app.presentation.channels.ChannelsViewModel.State
 import com.example.app.presentation.channels.adapter.ChannelsAdapter
-import com.example.app.presentation.channels.model.ChannelsItem
+import com.example.app.presentation.channels.model.ChannelsItemUi
 import com.example.app.presentation.chat.ChatFragment
 import com.example.app.utils.getApp
 import kotlinx.coroutines.flow.launchIn
@@ -51,21 +55,21 @@ class ChannelsFragment : Fragment(R.layout.fragment_channels) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.btnSubscribed.tvText.text = "Subscribed"
-        binding.btnAllStreams.tvText.text = "All streams"
+        binding.btnSubscribed.tvText.text = getString(R.string.subscribed)
+        binding.btnAllStreams.tvText.text = getString(R.string.all_streams)
 
-        binding.ivSearch.setOnClickListener {
+        binding.etChannelsSearch.addTextChangedListener { text ->
             viewModel.sendAction(
-                Action.OnSearchClick(binding.etSearch.text.toString())
+                Action.OnSearchClick(text?.toString().orEmpty())
             )
         }
 
         binding.btnSubscribed.root.setOnClickListener {
-            viewModel.sendAction(Action.onSubscribedClick)
+            viewModel.sendAction(Action.OnSubscribedClick)
         }
 
         binding.btnAllStreams.root.setOnClickListener {
-            viewModel.sendAction(Action.onAllStreamsClick)
+            viewModel.sendAction(Action.OnAllStreamsClick)
         }
 
         binding.layoutError.btnRetry.setOnClickListener {
@@ -75,6 +79,9 @@ class ChannelsFragment : Fragment(R.layout.fragment_channels) {
         }
 
         binding.rvChannels.adapter = adapter
+        binding.rvChannels.addItemDecoration(
+            DividerItemDecoration(requireContext(), LinearLayout.VERTICAL)
+        )
 
         viewModel.state
             .flowWithLifecycle(lifecycle)
@@ -87,16 +94,16 @@ class ChannelsFragment : Fragment(R.layout.fragment_channels) {
         requireContext().getApp().clearChannelsComponent()
     }
 
-    private fun render(state: ChannelsViewModel.State) {
+    private fun render(state: State) {
         with(binding) {
             when (state) {
-                is ChannelsViewModel.State.Loading -> {
+                is State.Loading -> {
                     progress.isVisible = true
                     rvChannels.isGone = true
                     layoutError.root.isGone = true
                 }
 
-                is ChannelsViewModel.State.Content -> {
+                is State.Content -> {
                     progress.isGone = true
                     rvChannels.isVisible = true
                     layoutError.root.isGone = true
@@ -116,7 +123,7 @@ class ChannelsFragment : Fragment(R.layout.fragment_channels) {
                     adapter.submitList(state.visibleItems)
                 }
 
-                is ChannelsViewModel.State.Error -> {
+                is State.Error -> {
                     progress.isGone = true
                     rvChannels.isGone = true
                     layoutError.root.isVisible = true
@@ -125,10 +132,10 @@ class ChannelsFragment : Fragment(R.layout.fragment_channels) {
         }
     }
 
-    private fun openChat(item: ChannelsItem.Topic) {
+    private fun openChat(item: ChannelsItemUi.TopicUi) {
         parentFragmentManager.beginTransaction()
             .replace(
-                R.id.fragmentContainerView,
+                R.id.fragment_container_view,
                 ChatFragment.newInstance(
                     streamName = item.streamName,
                     topicName = item.text

@@ -1,15 +1,15 @@
 package com.example.app.presentation.people.adapter
 
 import androidx.recyclerview.widget.DiffUtil
-import com.example.app.presentation.people.model.People
+import com.example.app.presentation.people.model.PeopleUi
 
-class PeopleDiffCallback : DiffUtil.ItemCallback<People>() {
+class PeopleDiffCallback : DiffUtil.ItemCallback<PeopleUi>() {
 
-    override fun areItemsTheSame(oldItem: People, newItem: People): Boolean {
+    override fun areItemsTheSame(oldItem: PeopleUi, newItem: PeopleUi): Boolean {
         return oldItem.id == newItem.id
     }
 
-    override fun areContentsTheSame(oldItem: People, newItem: People): Boolean {
+    override fun areContentsTheSame(oldItem: PeopleUi, newItem: PeopleUi): Boolean {
         return oldItem == newItem
     }
 }

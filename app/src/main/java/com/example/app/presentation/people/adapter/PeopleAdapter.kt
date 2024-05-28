@@ -8,15 +8,21 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.app.R
 import com.example.app.databinding.ItemPeopleBinding
-import com.example.app.presentation.people.model.People
+import com.example.app.presentation.people.model.PeopleUi
 
-class PeopleAdapter : ListAdapter<People, PeopleAdapter.PeopleViewHolder>(
+class PeopleAdapter(
+    private val onUserClick: (PeopleUi) -> Unit
+) : ListAdapter<PeopleUi, PeopleAdapter.PeopleViewHolder>(
     PeopleDiffCallback()
 ) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PeopleViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_people, parent, false)
-        return PeopleViewHolder(view)
+        return PeopleViewHolder(view).apply {
+            itemView.setOnClickListener {
+                onUserClick.invoke(getItem(adapterPosition))
+            }
+        }
     }
 
     override fun onBindViewHolder(holder: PeopleViewHolder, position: Int) {
@@ -28,7 +34,7 @@ class PeopleAdapter : ListAdapter<People, PeopleAdapter.PeopleViewHolder>(
 
         private val binding = ItemPeopleBinding.bind(itemView)
 
-        fun bind(person: People) {
+        fun bind(person: PeopleUi) {
             binding.ivPeopleAvatar.setImageResource(R.drawable.ic_darrel)
             binding.tvPeopleEmail.text = person.email
             binding.tvPeopleName.text = person.fullName

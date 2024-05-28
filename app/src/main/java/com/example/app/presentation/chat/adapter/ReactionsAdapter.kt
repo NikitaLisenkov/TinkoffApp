@@ -7,7 +7,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.app.R
-import com.example.app.presentation.chat.model.Reaction
+import com.example.app.presentation.chat.reactions.Reaction
+import com.example.app.utils.EmojiUtils
 
 class ReactionsAdapter(
     private val onReactionClick: (String) -> Unit
@@ -26,7 +27,7 @@ class ReactionsAdapter(
         return ReactionViewHolder(view).apply {
             itemView.setOnClickListener {
                 onReactionClick.invoke(
-                    requireNotNull(reaction?.code)
+                    requireNotNull(reaction?.name)
                 )
             }
         }
@@ -46,7 +47,7 @@ class ReactionsAdapter(
 
         fun bind(reaction: Reaction) {
             this.reaction = reaction
-            (itemView as TextView).text = reaction.code
+            (itemView as TextView).text = EmojiUtils.unicodeSequenceToString(reaction.code)
         }
     }
 }

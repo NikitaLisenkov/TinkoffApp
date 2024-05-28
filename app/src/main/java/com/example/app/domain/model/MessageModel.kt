@@ -8,5 +8,4 @@ data class MessageModel(
     val time: Long,
     val avatarUrl: String?,
     val reactions: List<ReactionModel>,
-    val subject: String
 )

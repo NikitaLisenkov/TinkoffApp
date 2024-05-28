@@ -1,7 +1,7 @@
 package com.example.app.di.channels
 
 import com.example.app.di.app.AppComponent
-import com.example.app.di.app.ViewModelModule
+import com.example.app.di.app.modules.ViewModelModule
 import com.example.app.presentation.channels.ChannelsFragment
 import dagger.Component
 

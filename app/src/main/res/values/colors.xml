@@ -1,17 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="gray">#CCCCCC</color>
-    <color name="gray_sheet">#1C1C1C</color>
-    <color name="gray_peek">#555555</color>
+    <color name="black_alt">#070707</color>
+    <color name="black_dark">#121212</color>
+    <color name="cyan_light">#2A9D8F</color>
+    <color name="cyan_dark">#006153</color>
+    <color name="green_light">#4AB54D</color>
+    <color name="green">#219653</color>
+    <color name="grey_dark">#1C1C1C</color>
+    <color name="grey_dark_secondary">#1E1E1E</color>
+    <color name="grey_dark_alt">#282828</color>
+    <color name="grey_selected">#3A3A3A</color>
+    <color name="grey_secondary">#555555</color>
+    <color name="grey_light">#919191</color>
+    <color name="grey_alt">#A1A1A1</color>
+    <color name="grey_primary">#CCCCCC</color>
+    <color name="grey_light_alt">#999999</color>
+    <color name="white_primary">#FFFFFFFF</color>
+    <color name="white_secondary">#FAFAFA</color>
+    <color name="yellow">#E9C46A</color>
     <color name="orange">#FF5722</color>
-    <color name="profile_user_name">#FFFFFF</color>
-    <color name="color_online">#4AB54D</color>
-    <color name="color_divider">#219653</color>
-    <color name="color_cyan">#2A9D8F</color>
-    <color name="color_yellow">#E9C46A</color>
-    <color name="color_offline">#555555</color>
-    <color name="gray_channels">#1E1E1E</color>
-    <color name="people_user_full_name">#FAFAFA</color>
 </resources>

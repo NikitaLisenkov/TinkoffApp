@@ -9,20 +9,15 @@ import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 
-@Module(includes = [ChatModule.Bindings::class])
-class ChatModule {
+@Module
+interface ChatModule {
+    @Binds
+    @ChatScope
+    fun chatRepository(chatRepositoryImpl: ChatRepositoryImpl): ChatRepository
 
-    @Module
-    interface Bindings {
-
-        @Binds
-        @ChatScope
-        fun chatRepository(chatRepositoryImpl: ChatRepositoryImpl): ChatRepository
-
-        @ChatScope
-        @Binds
-        @IntoMap
-        @ViewModelKey(ChatViewModel::class)
-        fun bindChatViewModel(chatViewModel: ChatViewModel): ViewModel
-    }
+    @ChatScope
+    @Binds
+    @IntoMap
+    @ViewModelKey(ChatViewModel::class)
+    fun bindChatViewModel(chatViewModel: ChatViewModel): ViewModel
 }

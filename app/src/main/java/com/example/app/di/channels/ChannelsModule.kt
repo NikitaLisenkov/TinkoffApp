@@ -9,20 +9,16 @@ import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 
-@Module(includes = [ChannelsModule.Bindings::class])
-class ChannelsModule {
+@Module
+interface ChannelsModule {
+    @Binds
+    @ChannelsScope
+    fun channelsRepository(channelsRepositoryImpl: ChannelsRepositoryImpl): ChannelsRepository
 
-    @Module
-    interface Bindings {
+    @ChannelsScope
+    @Binds
+    @IntoMap
+    @ViewModelKey(ChannelsViewModel::class)
+    fun bindChannelsViewModel(channelsViewModel: ChannelsViewModel): ViewModel
 
-        @Binds
-        @ChannelsScope
-        fun channelsRepository(channelsRepositoryImpl: ChannelsRepositoryImpl): ChannelsRepository
-
-        @ChannelsScope
-        @Binds
-        @IntoMap
-        @ViewModelKey(ChannelsViewModel::class)
-        fun bindChannelsViewModel(channelsViewModel: ChannelsViewModel): ViewModel
-    }
 }

@@ -22,25 +22,7 @@ data class MessageResponse(
     val avatarUrl: String?,
     @SerializedName("reactions")
     val reactions: List<ReactionResponse>,
-    @SerializedName("subject")
-    val subject: String
 )
-
-data class SendMessageResponse(
-    @SerializedName("id")
-    val id: Long,
-
-    @SerializedName("result")
-    val result: ResultTypeResponse,
-)
-
-enum class ResultTypeResponse {
-    @SerializedName("success")
-    SUCCESS,
-
-    @SerializedName("error")
-    ERROR
-}
 
 data class ReactionResponse(
     @SerializedName("emoji_name")
