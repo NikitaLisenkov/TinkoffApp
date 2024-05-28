@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">TinkoffApp</string>
+    <string name="result">Result:</string>
+    <string name="online">online</string>
+    <string name="offline">offline</string>
+    <string name="something_went_wrong">Something went wrong</string>
+    <string name="retry">Retry</string>
+    <string name="subscribed">Subscribed</string>
+    <string name="all_streams">All streams</string>
+    <string name="darrel_steward">Darrel Steward</string>
+    <string name="email">darrel@company.com</string>
+    <string name="general">#general</string>
+    <string name="hint_write">Написать…</string>
+    <string name="search">Search…</string>
+    <string name="channels">Channels</string>
+    <string name="people">People</string>
+    <string name="profile">Profile</string>
+    <string name="users">Users…</string>
+    <string name="channel_name_placeholder">#%s</string>
+    <string name="topic_name_placeholder">Topic: #%s</string>
+</resources>
