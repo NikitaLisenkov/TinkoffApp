@@ -22,7 +22,7 @@ class ReactionsDialog : BottomSheetDialogFragment(R.layout.bottom_sheet) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         adapter.reactions = Reactions.emojiSet
-        val rvEmojis = view.findViewById<RecyclerView>(R.id.rvEmojis)
+        val rvEmojis = view.findViewById<RecyclerView>(R.id.rv_emojis)
         rvEmojis.adapter = adapter
     }
 

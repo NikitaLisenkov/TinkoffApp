@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.app.R
@@ -45,6 +46,14 @@ class PeopleFragment : BaseFragment<State, Action, PeopleViewModel>(R.layout.fra
                 1000
             )
         }
+
+        binding.usersSearch.etUsersSearchField.addTextChangedListener {
+            viewModel.sendAction(
+                Action.OnSearchText(
+                    it?.toString().orEmpty()
+                )
+            )
+        }
     }
 
     override fun onDetach() {
@@ -55,7 +64,7 @@ class PeopleFragment : BaseFragment<State, Action, PeopleViewModel>(R.layout.fra
     private fun openUserInfo(user: PeopleUi) {
         parentFragmentManager.beginTransaction()
             .replace(
-                R.id.fragmentContainerView,
+                R.id.fragment_container_view,
                 UserDetailsInfoFragment.newInstance(
                     userAvatarUrl = user.avatarUrl,
                     userFullName = user.fullName,

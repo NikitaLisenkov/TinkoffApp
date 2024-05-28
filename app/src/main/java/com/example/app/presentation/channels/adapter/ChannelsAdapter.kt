@@ -6,9 +6,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.app.R
-import com.example.app.presentation.channels.model.ChannelsItemUi
 import com.example.app.databinding.ItemChannelBinding
 import com.example.app.databinding.ItemTopicBinding
+import com.example.app.presentation.channels.model.ChannelsItemUi
 
 class ChannelsAdapter(
     private val onChannelClick: (ChannelsItemUi.StreamUi) -> Unit,
@@ -57,15 +57,14 @@ class ChannelsAdapter(
         }
     }
 
-
     class ChannelViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         private val binding = ItemChannelBinding.bind(itemView)
 
         fun bind(item: ChannelsItemUi.StreamUi) {
-            binding.tvText.text = item.text
+            binding.tvText.text = itemView.context.getString(R.string.channel_name_placeholder, item.text)
             binding.ivArrow.setImageResource(
-                if (item.isExpanded) R.drawable.ic_arrow_down_24 else R.drawable.ic_arrow_up_24
+                if (item.isExpanded) R.drawable.ic_arrow_down else R.drawable.ic_arrow_up
             )
         }
     }
@@ -77,6 +76,9 @@ class ChannelsAdapter(
         fun bind(item: ChannelsItemUi.TopicUi) {
             binding.tvText.text = item.text
             binding.tvText.setBackgroundResource(item.backgroundColorRes)
+            val isEven = adapterPosition % 2 == 0
+            val bgColor = if (isEven) R.color.cyan_light else R.color.yellow
+            itemView.setBackgroundResource(bgColor)
         }
     }
 

@@ -9,20 +9,15 @@ import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 
-@Module(includes = [PeopleModule.Bindings::class])
-class PeopleModule {
+@Module
+interface PeopleModule {
+    @Binds
+    @PeopleScope
+    fun peopleRepository(peopleRepositoryImpl: PeopleRepositoryImpl): PeopleRepository
 
-    @Module
-    interface Bindings {
-
-        @Binds
-        @PeopleScope
-        fun peopleRepository(peopleRepositoryImpl: PeopleRepositoryImpl): PeopleRepository
-
-        @PeopleScope
-        @Binds
-        @IntoMap
-        @ViewModelKey(PeopleViewModel::class)
-        fun bindPeopleViewModel(peopleViewModel: PeopleViewModel): ViewModel
-    }
+    @PeopleScope
+    @Binds
+    @IntoMap
+    @ViewModelKey(PeopleViewModel::class)
+    fun bindPeopleViewModel(peopleViewModel: PeopleViewModel): ViewModel
 }

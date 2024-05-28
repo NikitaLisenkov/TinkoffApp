@@ -15,20 +15,22 @@ fun List<MessageModel>.toChatItems(myId: Long): List<ChatItemUi> =
     groupBy { DateUtils.convertSecondsToDateStr(it.time) }
         .flatMap { (date, messages) ->
             listOf(DateItemUi(date)) + messages.map {
+                val formattedTime = DateUtils.convertSecondsToDateStr(it.time, DateUtils.sdfHourMinute)
                 if (it.senderId == Constants.MY_ID) {
                     MessageOutgoingUi(
                         id = it.msgId,
                         text = it.content,
-                        time = it.time,
+                        time = formattedTime,
                         reactions = it.reactions.toReactionItems(myId)
                     )
                 } else {
                     MessageIncomingUi(
                         id = it.msgId,
                         text = it.content,
-                        time = it.time,
+                        time = formattedTime,
                         reactions = it.reactions.toReactionItems(myId),
-                        user = it.senderName
+                        avatarUrl = it.avatarUrl,
+                        userName = it.senderName
                     )
                 }
             }

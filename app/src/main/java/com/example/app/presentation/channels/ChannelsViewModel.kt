@@ -92,10 +92,10 @@ class ChannelsViewModel @Inject constructor(
         }
     }
 
-    private val searchFlow = MutableSharedFlow<String>(extraBufferCapacity = 100)
+    private val searchChannelsFlow = MutableSharedFlow<String>(extraBufferCapacity = 100)
 
     init {
-        searchFlow
+        searchChannelsFlow
             .distinctUntilChanged()
             .debounce(500)
             .mapLatest { search(it) }
@@ -106,7 +106,7 @@ class ChannelsViewModel @Inject constructor(
 
     private fun emitSearch(text: String) {
         viewModelScope.launch {
-            searchFlow.emit(text)
+            searchChannelsFlow.emit(text)
         }
     }
 

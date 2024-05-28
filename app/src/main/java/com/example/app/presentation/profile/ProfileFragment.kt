@@ -52,7 +52,7 @@ class ProfileFragment : BaseFragment<
                     if (state.isOnline) {
                         layoutProfile.tvUserStatus.text = getString(com.example.app.R.string.online)
                         layoutProfile.tvUserStatus.setTextColor(
-                            androidx.core.content.ContextCompat.getColor(requireContext(), com.example.app.R.color.color_online)
+                            androidx.core.content.ContextCompat.getColor(requireContext(), com.example.app.R.color.green_light)
                         )
                     } else {
                         layoutProfile.tvUserStatus.text = getString(com.example.app.R.string.offline)

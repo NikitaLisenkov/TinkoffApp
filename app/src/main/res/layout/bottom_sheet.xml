@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="360dp"
-    android:background="@color/gray_sheet"
+    android:layout_height="match_parent"
+    android:background="@color/grey_dark"
     android:orientation="vertical">
 
     <View
@@ -12,10 +12,10 @@
         android:layout_height="8dp"
         android:layout_gravity="center"
         android:layout_marginTop="8dp"
-        android:background="@color/gray_peek" />
+        android:background="@drawable/bg_bottom_sheet" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvEmojis"
+        android:id="@+id/rv_emojis"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="8dp"

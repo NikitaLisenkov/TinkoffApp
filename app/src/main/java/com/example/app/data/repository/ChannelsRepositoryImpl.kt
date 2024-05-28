@@ -24,13 +24,18 @@ class ChannelsRepositoryImpl @Inject constructor(
             api.getAllStreams()
         }.streams
 
+        val expandedStreams = streamDao.getExpandedStreams().map { it.streamId }.toSet()
+
         coroutineScope {
             streams.forEach { stream ->
                 launch {
+                    val streamEntity = stream.toEntity(
+                        isSubscribed = onlySubscribed,
+                        isExpanded = stream.streamId in expandedStreams
+                    )
+
                     val topicsEntities = api.getTopics(stream.streamId).topics
                         .toEntity(streamId = stream.streamId)
-
-                    val streamEntity = stream.toEntity(isSubscribed = onlySubscribed)
 
                     streamDao.insertStreamWithTopicList(
                         stream = streamEntity,
