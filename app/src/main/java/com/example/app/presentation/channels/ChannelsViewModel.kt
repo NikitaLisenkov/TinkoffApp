@@ -40,9 +40,12 @@ class ChannelsViewModel @Inject constructor(
                 SelectedTab.ALL_STREAMS -> repo.getAllStreamsWithTopicsFlow(onlySubscribed = false)
             }
         }.onEach { streams ->
-            sendAction(
-                Action.UpdateStreams(streams)
-            )
+            val isSearching = (_state.value as? State.Content)?.isSearching ?: false
+            if (!isSearching) {
+                sendAction(
+                    Action.UpdateStreams(streams)
+                )
+            }
         }.launchIn(viewModelScope)
 
         sendAction(
@@ -83,15 +86,16 @@ class ChannelsViewModel @Inject constructor(
             State.Content(
                 visibleItems = items,
                 items = items,
-                selectedTab = it.selectedTab
+                selectedTab = it.selectedTab,
+                isSearching = false
             )
         }
     }
 
-    private val searchFlow = MutableSharedFlow<String>(extraBufferCapacity = 100)
+    private val searchChannelsFlow = MutableSharedFlow<String>(extraBufferCapacity = 100)
 
     init {
-        searchFlow
+        searchChannelsFlow
             .distinctUntilChanged()
             .debounce(500)
             .mapLatest { search(it) }
@@ -102,13 +106,12 @@ class ChannelsViewModel @Inject constructor(
 
     private fun emitSearch(text: String) {
         viewModelScope.launch {
-            searchFlow.emit(text)
+            searchChannelsFlow.emit(text)
         }
     }
 
     private fun search(query: String): State {
         val currentState = _state.value as? State.Content ?: return _state.value
-        _state.update { State.Loading(it.selectedTab) }
 
         val newItems = if (query.isBlank()) {
             currentState.items
@@ -118,7 +121,7 @@ class ChannelsViewModel @Inject constructor(
             }
         }
 
-        return currentState.copy(visibleItems = newItems)
+        return currentState.copy(visibleItems = newItems, isSearching = query.isNotBlank())
     }
 
     private fun toggleChannel(item: ChannelsItemUi.StreamUi) {
@@ -140,7 +143,8 @@ class ChannelsViewModel @Inject constructor(
         data class Content(
             val visibleItems: List<ChannelsItemUi>,
             val items: List<ChannelsItemUi>,
-            override val selectedTab: SelectedTab
+            override val selectedTab: SelectedTab,
+            val isSearching: Boolean
         ) : State
 
         data class Error(

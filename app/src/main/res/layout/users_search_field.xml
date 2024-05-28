@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="56dp"
+    android:background="@color/grey_dark_secondary">
+
+    <EditText
+        android:id="@+id/et_users_search_field"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="20dp"
+        android:backgroundTint="@color/grey_dark_secondary"
+        android:fontFamily="sans-serif-thin"
+        android:hint="@string/users"
+        android:maxLines="1"
+        android:paddingStart="30dp"
+        android:textColor="@color/white_primary"
+        android:textColorHint="@color/white_primary"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/iv_search"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_gravity="end|center"
+        android:layout_marginEnd="28dp"
+        android:src="@drawable/ic_search" />
+
+
+</FrameLayout>

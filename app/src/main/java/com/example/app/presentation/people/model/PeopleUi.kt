@@ -7,8 +7,3 @@ data class PeopleUi(
     val email: String?,
     val isOnline: Boolean
 )
-
-enum class PeopleStatus {
-    ONLINE,
-    OFFLINE
-}

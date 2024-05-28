@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.app.R
 import com.example.app.databinding.FragmentChatBinding
+import com.example.app.presentation.base.Hideable
 import com.example.app.presentation.chat.ChatViewModel.Action
 import com.example.app.presentation.chat.adapter.ChatAdapter
 import com.example.app.presentation.chat.model.ChatItemUi
@@ -27,7 +28,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
-class ChatFragment : Fragment(R.layout.fragment_chat) {
+class ChatFragment : Fragment(R.layout.fragment_chat), Hideable {
 
     private val binding: FragmentChatBinding by viewBinding(FragmentChatBinding::bind)
 
@@ -60,8 +61,8 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
         arguments?.let {
             val streamName = it.getString(ARG_STREAM_NAME).orEmpty()
             val topicName = it.getString(ARG_TOPIC_NAME).orEmpty()
-            binding.toolbar.title = streamName
-            binding.tvTopic.text = topicName
+            binding.toolbarChat.title = getString(R.string.channel_name_placeholder, streamName)
+            binding.tvTopic.text = getString(R.string.topic_name_placeholder, topicName)
 
             val loadAction = Action.LoadData(streamName = streamName, topicName = topicName)
 
@@ -72,7 +73,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
             }
         }
 
-        binding.toolbar.setNavigationOnClickListener {
+        binding.toolbarChat.setNavigationOnClickListener {
             parentFragmentManager.popBackStack()
         }
 
@@ -100,7 +101,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
 
     private fun setupInput() {
         with(binding) {
-            etText.addTextChangedListener {
+            etTextInputField.addTextChangedListener {
                 val text = it?.toString().orEmpty()
                 if (text.isBlank()) {
                     ivSend.setImageResource(R.drawable.ic_add)
@@ -109,12 +110,12 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
                 }
             }
             ivSend.setOnClickListener {
-                val text = etText.text.toString()
+                val text = etTextInputField.text.toString()
                 if (text.isBlank()) {
                     Snackbar.make(requireView(), "Enter message!", Snackbar.LENGTH_SHORT).show()
                 } else {
                     viewModel.sendAction(Action.SendMessage(text))
-                    etText.text.clear()
+                    etTextInputField.text.clear()
                 }
             }
         }

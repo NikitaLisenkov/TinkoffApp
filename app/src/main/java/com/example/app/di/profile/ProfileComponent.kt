@@ -18,6 +18,5 @@ import dagger.Component
 )
 @ProfileScope
 interface ProfileComponent {
-
     fun inject(profileFragment: ProfileFragment)
 }

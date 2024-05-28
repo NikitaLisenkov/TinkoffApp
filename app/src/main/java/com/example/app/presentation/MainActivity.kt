@@ -7,14 +7,17 @@ import androidx.fragment.app.Fragment
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.app.R
 import com.example.app.databinding.ActivityMainBinding
+import com.example.app.presentation.base.Hideable
 import com.example.app.presentation.channels.ChannelsFragment
-import com.example.app.presentation.chat.ChatFragment
 import com.example.app.presentation.people.PeopleFragment
 import com.example.app.presentation.profile.ProfileFragment
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     private val binding by viewBinding(ActivityMainBinding::bind)
+
+    private val currentFragment: Fragment?
+        get() = supportFragmentManager.findFragmentById(R.id.fragment_container_view)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,6 +27,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             if (it.itemId == binding.bottomNavigationView.selectedItemId && savedInstanceState != null) {
                 return@setOnItemSelectedListener true
             }
+
+            if (currentFragment is Hideable) return@setOnItemSelectedListener true
 
             when (it.itemId) {
                 R.id.channelsFragment -> {
@@ -45,17 +50,15 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             }
         }
 
+        supportFragmentManager.addOnBackStackChangedListener {
+            hideNavigationView()
+        }
+
         binding.bottomNavigationView.selectedItemId = savedInstanceState?.getInt(
             ARG_ITEM_ID,
             R.id.channelsFragment
         )
             ?: R.id.channelsFragment
-
-        supportFragmentManager.addOnBackStackChangedListener {
-            val isChatVisible =
-                supportFragmentManager.findFragmentByTag(ChatFragment.TAG)?.isVisible
-            binding.bottomNavigationView.isGone = isChatVisible ?: false
-        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -63,10 +66,19 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         outState.putInt(ARG_ITEM_ID, binding.bottomNavigationView.selectedItemId)
     }
 
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        hideNavigationView()
+    }
+
     private fun replaceFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainerView, fragment)
+            .replace(R.id.fragment_container_view, fragment)
             .commit()
+    }
+
+    private fun hideNavigationView() {
+        binding.bottomNavigationView.isGone = currentFragment is Hideable
     }
 
     private companion object {
