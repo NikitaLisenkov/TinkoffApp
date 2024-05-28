@@ -11,8 +11,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginHorizontal="16dp"
-        android:text="Subscribed"
-        android:textColor="@color/white"
+        android:text="@string/subscribed"
+        android:textColor="@color/white_primary"
         android:textSize="22sp" />
 
     <com.google.android.material.divider.MaterialDivider
@@ -20,5 +20,5 @@
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:layout_marginTop="8dp"
-        app:dividerColor="@color/color_divider" />
+        app:dividerColor="@color/green" />
 </LinearLayout>

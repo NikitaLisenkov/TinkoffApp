@@ -35,27 +35,27 @@
         android:layout_marginStart="10dp"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textColor="@color/people_user_full_name"
+        android:textColor="@color/white_secondary"
         android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@id/tvPeopleEmail"
+        app:layout_constraintBottom_toTopOf="@id/tv_people_email"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/ivPeopleAvatar"
         app:layout_constraintTop_toTopOf="@id/ivPeopleAvatar"
         app:layout_constraintVertical_chainStyle="packed"
-        tools:text="Darrel Steward" />
+        tools:text="@string/darrel_steward" />
 
     <TextView
-        android:id="@+id/tvPeopleEmail"
+        android:id="@+id/tv_people_email"
         android:layout_width="0.dp"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textColor="#A1A1A1"
+        android:textColor="@color/grey_alt"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@id/ivPeopleAvatar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/tvPeopleName"
         app:layout_constraintTop_toBottomOf="@id/tvPeopleName"
-        tools:text="darrel@company.com" />
+        tools:text="@string/email" />
 </androidx.constraintlayout.widget.ConstraintLayout>

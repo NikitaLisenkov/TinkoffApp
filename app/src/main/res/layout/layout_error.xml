@@ -9,8 +9,8 @@
         android:id="@+id/tv_error"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Something went wrong"
-        android:textColor="@color/white"
+        android:text="@string/something_went_wrong"
+        android:textColor="@color/white_primary"
         android:textSize="24sp" />
 
     <Button
@@ -18,5 +18,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="Retry" />
+        android:text="@string/retry" />
 </LinearLayout>
