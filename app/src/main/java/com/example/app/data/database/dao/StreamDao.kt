@@ -32,6 +32,9 @@ interface StreamDao {
     @Transaction
     fun getAllSubscribedStreamsWithTopics(): Flow<List<StreamWithTopicsEntity>>
 
+    @Query("SELECT * FROM stream WHERE stream.is_expanded = 1")
+    suspend fun getExpandedStreams(): List<StreamEntity>
+
     @Query("UPDATE stream SET is_expanded = :isExpanded WHERE stream_id = :streamId")
     suspend fun updateStream(streamId: Long, isExpanded: Boolean)
 }

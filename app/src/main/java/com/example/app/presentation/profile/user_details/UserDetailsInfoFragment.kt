@@ -9,8 +9,9 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
 import com.example.app.R
 import com.example.app.databinding.FragmentUserDetailsInfoBinding
+import com.example.app.presentation.base.Hideable
 
-class UserDetailsInfoFragment : Fragment(R.layout.fragment_user_details_info) {
+class UserDetailsInfoFragment : Fragment(R.layout.fragment_user_details_info), Hideable {
 
     private val binding by viewBinding(FragmentUserDetailsInfoBinding::bind)
 
@@ -31,7 +32,7 @@ class UserDetailsInfoFragment : Fragment(R.layout.fragment_user_details_info) {
             binding.tvUserStatus.setTextColor(
                 ContextCompat.getColor(
                     requireContext(),
-                    R.color.color_online
+                    R.color.green_light
                 )
             )
         } else {
@@ -39,7 +40,7 @@ class UserDetailsInfoFragment : Fragment(R.layout.fragment_user_details_info) {
             binding.tvUserStatus.setTextColor(
                 ContextCompat.getColor(
                     requireContext(),
-                    R.color.color_offline
+                    R.color.orange
                 )
             )
         }

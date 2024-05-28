@@ -2,15 +2,15 @@ package com.example.app.presentation.chat.view
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.Rect
-import android.graphics.RectF
-import android.text.TextPaint
+import android.graphics.PointF
 import android.util.AttributeSet
 import android.view.View
+import androidx.annotation.ColorInt
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.content.withStyledAttributes
 import com.example.app.R
+import com.example.app.utils.EmojiUtils
 import com.example.app.utils.dp
 import com.example.app.utils.sp
 
@@ -21,7 +21,7 @@ class EmojiView @JvmOverloads constructor(
     defTheme: Int = 0
 ) : View(context, attributeSet, defStyle, defTheme) {
 
-    var emojiCode: String = "\uD83E\uDD74"
+    var emojiName: String = ""
         set(value) {
             if (field != value) {
                 field = value
@@ -29,7 +29,7 @@ class EmojiView @JvmOverloads constructor(
             }
         }
 
-    var counter: Int = 0
+    var emojiUnicode: String = ""
         set(value) {
             if (field != value) {
                 field = value
@@ -37,81 +37,169 @@ class EmojiView @JvmOverloads constructor(
             }
         }
 
-    var isEmojiSelected: Boolean = false
+    var emojiCounter: Int = 0
         set(value) {
             if (field != value) {
                 field = value
-                if (value) {
-                    bgPaint.color = context.getColor(R.color.emoji_view_selected)
-                } else {
-                    bgPaint.color = context.getColor(R.color.emoji_view_not_selected)
-                }
                 requestLayout()
             }
         }
 
-    private var marginLeft = 0
-    private var marginRight = 0
-    private var marginTop = 0
-    private var marginBottom = 0
+    var flagIsSelected: Boolean = false
+        set(value) {
+            field = value
+            invalidate()
+        }
 
-    private val roundRadius = 10f.dp(context)
+    @ColorInt
+    private var counterColor: Int = 0
+
+    @ColorInt
+    private var colorNotSelected: Int = 0
+
+    @ColorInt
+    private var colorSelected: Int = 0
+
+    private var emojiWidth: Float = 0F
+    private var emojiHeight: Float = 0F
+
+    private var cornerRadius: Float = 10f.dp(context)
+    private val textMargin: Float = 6f.sp(context)
+    private val bgMargin: Float = 10f.dp(context)
+
+    private val emojiPoint = PointF()
+    private val counterPoint = PointF()
+    private val paddingPaint = Paint()
+
+    private val bgPaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.FILL
+    }
+    private val emojiPaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        textAlign = Paint.Align.CENTER
+    }
+
+    private var emojiSize: Float
+        get() = emojiPaint.textSize
+        set(value) {
+            if (emojiPaint.textSize != value) {
+                emojiPaint.textSize = value
+                requestLayout()
+            }
+        }
 
     init {
         context.withStyledAttributes(attributeSet, R.styleable.EmojiView) {
-            counter = getInt(R.styleable.EmojiView_count, 0)
+            emojiUnicode = DEFAULT_EMOJI_UNICODE
+            emojiSize = DEFAULT_FONT_SIZE_SP.sp(context)
+            emojiCounter = getInt(R.styleable.EmojiView_count, 0)
+            counterColor = ResourcesCompat.getColor(resources, R.color.white_primary, null)
+            colorSelected = ResourcesCompat.getColor(resources, R.color.grey_selected, null)
+            colorNotSelected =
+                ResourcesCompat.getColor(resources, R.color.grey_dark, null)
         }
     }
 
-    private val textToDraw: String
-        get() {
-            return if (counter != 0) "$emojiCode $counter"
-            else emojiCode
-        }
-
-    private val bgPaint = Paint().apply {
-        color = context.getColor(R.color.emoji_view_not_selected)
+    private val counterPaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        textAlign = Paint.Align.LEFT
+        textSize = emojiSize
+        color = counterColor
     }
-
-    private val textPaint = TextPaint().apply {
-        color = Color.WHITE
-        textSize = 20f.sp(context)
-    }
-
-    private val bgRectF = RectF()
-    private val textRect = Rect()
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        textPaint.getTextBounds(textToDraw, 0, textToDraw.length, textRect)
+        val counterString = emojiCounter.toString()
+        emojiWidth = if (emojiUnicode == "+") {
+            val defEmoji = EmojiUtils.unicodeSequenceToString(DEFAULT_EMOJI_UNICODE)
+            emojiPaint.measureText(defEmoji, 0, defEmoji.length)
+        } else {
+            emojiPaint.measureText(emojiUnicode, 0, emojiUnicode.length)
+        }
+        val textWidth =
+            emojiWidth + counterPaint.measureText(counterString, 0, counterString.length)
+        emojiHeight = emojiPaint.fontMetrics.run { bottom - ascent }
+        val contentWidth = textWidth + (paddingStart + paddingEnd + bgMargin) * 2f + textMargin
+        val contentHeight = emojiHeight + paddingTop + paddingBottom + bgMargin * 2f
+        setMeasuredDimension(contentWidth.toInt(), contentHeight.toInt())
+    }
 
-        val actualWidth = resolveSize(
-            paddingRight + paddingLeft + textRect.width() + marginRight + marginLeft,
-            widthMeasureSpec
-        )
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        if (emojiUnicode == "+") {
+            emojiPoint.set(width / 2f, height / 2f)
+        } else {
+            val padding = paddingPaint.measureText("0") * (emojiCounter.toString().length - 1)
+            val baseline = height / 1.6f
 
-        val actualHeight = resolveSize(
-            paddingTop + paddingBottom + textRect.height() + marginTop + marginBottom,
-            heightMeasureSpec
-        )
-
-        bgRectF.set(
-            marginLeft.toFloat(),
-            marginTop.toFloat(),
-            actualWidth.toFloat(),
-            actualHeight.toFloat()
-        )
-
-        setMeasuredDimension(
-            actualWidth,
-            actualHeight
-        )
+            emojiPoint.set(
+                width / 2f - textMargin - padding,
+                baseline
+            )
+            counterPoint.set(
+                width / 2f + textMargin - padding,
+                baseline
+            )
+        }
     }
 
     override fun onDraw(canvas: Canvas) {
-        val topOffset = height / 2 - textRect.exactCenterY()
+        val canvasCount = canvas.save()
+        setViewBackground(canvas)
+        drawViewContent(canvas)
+        canvas.restoreToCount(canvasCount)
+    }
 
-        canvas.drawRoundRect(bgRectF, roundRadius, roundRadius, bgPaint)
-        canvas.drawText(textToDraw, paddingLeft.toFloat(), topOffset, textPaint)
+    override fun onCreateDrawableState(extraSpace: Int): IntArray {
+        val drawableState = super.onCreateDrawableState(extraSpace + 1)
+        if (isSelected) mergeDrawableStates(drawableState, DRAWABLE_STATE)
+        return drawableState
+    }
+
+    private fun drawViewContent(canvas: Canvas) {
+        with(canvas) {
+            if (emojiUnicode == "+") {
+                emojiPaint.apply {
+                    color = counterColor
+                    strokeWidth = 1f.dp(context)
+                }
+                drawLine(
+                    (width - emojiWidth) / 2,
+                    height / 2f,
+                    (width + emojiWidth) / 2,
+                    height / 2f,
+                    emojiPaint
+                )
+                drawLine(
+                    width / 2f,
+                    (height + emojiHeight) / 2,
+                    width / 2f,
+                    (height - emojiHeight) / 2f,
+                    emojiPaint
+                )
+            } else {
+                drawText(emojiUnicode, emojiPoint.x, emojiPoint.y, emojiPaint)
+                drawText(emojiCounter.toString(), counterPoint.x, counterPoint.y, counterPaint)
+            }
+        }
+    }
+
+    private fun setViewBackground(canvas: Canvas) {
+        bgPaint.apply {
+            color = if (flagIsSelected) colorSelected
+            else colorNotSelected
+        }
+        canvas.drawRoundRect(
+            0f,
+            0f,
+            measuredWidth.toFloat(),
+            measuredHeight.toFloat(),
+            cornerRadius,
+            cornerRadius,
+            bgPaint
+        )
+    }
+
+    companion object {
+        private const val DEFAULT_FONT_SIZE_SP = 14f
+        private const val DEFAULT_EMOJI_UNICODE = "1f600"
+        private val DRAWABLE_STATE = IntArray(1) { android.R.attr.state_selected }
     }
 
 }
