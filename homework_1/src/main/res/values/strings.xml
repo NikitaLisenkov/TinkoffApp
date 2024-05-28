@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">HomeWork1</string>
+    <string name="open_second_activity">Open Second Activity</string>
+    <string name="result">Result:</string>
+    <string name="send_result">Send result</string>
+    <string name="start_service">Start service</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
