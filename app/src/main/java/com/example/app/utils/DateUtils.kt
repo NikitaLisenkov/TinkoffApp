@@ -6,10 +6,11 @@ import java.util.Locale
 
 object DateUtils {
 
-    private val formatter = SimpleDateFormat("d MMM", Locale.getDefault())
+    val sdfDayMonth = SimpleDateFormat("d MMM", Locale.US)
+    val sdfHourMinute = SimpleDateFormat("HH:mm", Locale.US)
 
-    fun convertMillisToDateStr(millis: Long): String {
-        val calendar = Date(millis)
+    fun convertSecondsToDateStr(seconds: Long, formatter: SimpleDateFormat = sdfDayMonth): String {
+        val calendar = Date(seconds * 1000)
         return formatter.format(calendar)
     }
 

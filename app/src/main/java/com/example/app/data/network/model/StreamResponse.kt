@@ -9,7 +9,7 @@ data class StreamsResponse(
 
 data class StreamResponse(
     @SerializedName("stream_id")
-    val streamId: Int,
+    val streamId: Long,
     @SerializedName("name")
     val name: String,
     @SerializedName("color")
