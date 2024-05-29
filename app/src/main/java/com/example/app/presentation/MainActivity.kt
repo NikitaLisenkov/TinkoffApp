@@ -2,6 +2,8 @@ package com.example.app.presentation
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.view.WindowCompat
 import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -22,6 +24,10 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.grey_dark_secondary)
+        WindowCompat.getInsetsController(window, window.decorView).apply {
+            isAppearanceLightStatusBars = false
+        }
 
         binding.bottomNavigationView.setOnItemSelectedListener {
             if (it.itemId == binding.bottomNavigationView.selectedItemId && savedInstanceState != null) {
@@ -55,10 +61,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         }
 
         binding.bottomNavigationView.selectedItemId = savedInstanceState?.getInt(
-            ARG_ITEM_ID,
-            R.id.channelsFragment
-        )
-            ?: R.id.channelsFragment
+            ARG_ITEM_ID, R.id.channelsFragment
+        ) ?: R.id.channelsFragment
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -72,8 +76,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     }
 
     private fun replaceFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container_view, fragment)
+        supportFragmentManager.beginTransaction().replace(R.id.fragment_container_view, fragment)
             .commit()
     }
 

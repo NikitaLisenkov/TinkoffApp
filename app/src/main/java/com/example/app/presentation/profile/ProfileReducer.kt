@@ -5,6 +5,7 @@ import com.example.app.presentation.base.BaseReducer
 import com.example.app.presentation.profile.ProfileViewModel.Action
 import com.example.app.presentation.profile.ProfileViewModel.State
 import com.example.app.utils.runSuspendCatching
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 class ProfileReducer @Inject constructor(
@@ -14,6 +15,8 @@ class ProfileReducer @Inject constructor(
     override suspend fun reduce(currentState: State, action: Action): State {
         return when (action) {
             is Action.LoadData -> {
+                //for animation
+                delay(1000)
                 runSuspendCatching { repo.getOwnUserProfile() }
                     ?.let {
                         State.Content(

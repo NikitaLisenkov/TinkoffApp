@@ -36,10 +36,14 @@ class PeopleReducer @Inject constructor(
                         isOnline = user.isActive
                     )
                 }
-                State.Content(
-                    people = people,
-                    searchText = (currentState as? State.Content)?.searchText
-                )
+                if (people.isEmpty()) {
+                    State.Error
+                } else {
+                    State.Content(
+                        people = people,
+                        searchText = (currentState as? State.Content)?.searchText
+                    )
+                }
             }
 
             is Action.OnSearchText -> {

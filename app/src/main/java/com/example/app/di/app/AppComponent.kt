@@ -10,6 +10,7 @@ import com.example.app.di.app.modules.DataSourceModule
 import com.example.app.di.app.modules.DatabaseModule
 import com.example.app.di.app.modules.NetworkModule
 import com.example.app.di.app.modules.ViewModelModule
+import com.example.app.presentation.MainActivity
 import com.google.gson.Gson
 import dagger.Component
 import javax.inject.Singleton
@@ -31,4 +32,5 @@ interface AppComponent {
     fun getStreamDao(): StreamDao
     fun getChatDao(): ChatDao
     fun gson(): Gson
+    fun inject(activity: MainActivity)
 }

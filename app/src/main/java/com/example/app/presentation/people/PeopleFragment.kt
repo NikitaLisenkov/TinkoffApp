@@ -80,24 +80,44 @@ class PeopleFragment : BaseFragment<State, Action, PeopleViewModel>(R.layout.fra
         with(binding) {
             when (state) {
                 is State.Loading -> {
-                    swipeRefresh.isRefreshing = true
-                    rvPeopleList.isGone = true
                     layoutError.root.isGone = true
+                    if (adapter.currentList.isEmpty()) {
+                        hideContent(showShimmer = true)
+                    } else {
+                        showContent(showRefreshing = true)
+                    }
                 }
 
                 is State.Content -> {
-                    adapter.submitList(state.people)
-                    rvPeopleList.isVisible = true
-                    swipeRefresh.isRefreshing = false
                     layoutError.root.isGone = true
+                    adapter.submitList(state.people)
+                    showContent(showRefreshing = false)
                 }
 
                 is State.Error -> {
                     layoutError.root.isVisible = true
-                    rvPeopleList.isGone = true
-                    swipeRefresh.isRefreshing = false
+                    hideContent(showShimmer = false)
                 }
             }
+        }
+    }
+
+    private fun showContent(showRefreshing: Boolean) {
+        with(binding) {
+            usersSearch.root.isVisible = true
+            swipeRefresh.isVisible = true
+            swipeRefresh.isRefreshing = showRefreshing
+            rvPeopleList.isVisible = true
+            shimmer.root.isGone = true
+        }
+    }
+
+    private fun hideContent(showShimmer: Boolean) {
+        with(binding) {
+            usersSearch.root.isGone = true
+            swipeRefresh.isGone = true
+            rvPeopleList.isGone = true
+            shimmer.root.isVisible = showShimmer
         }
     }
 }
