@@ -7,12 +7,9 @@
     android:gravity="center"
     tools:context=".presentation.profile.ProfileFragment">
 
-    <ProgressBar
-        android:id="@+id/progress"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_gravity="center"
-        android:visibility="gone" />
+    <include
+        android:id="@+id/profile_shimmer"
+        layout="@layout/layout_profile_shimmer" />
 
     <include
         android:id="@+id/layout_profile"

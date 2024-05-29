@@ -2,10 +2,12 @@ package com.example.app.presentation.profile
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.bumptech.glide.Glide
 import com.example.app.R
 import com.example.app.databinding.FragmentProfileBinding
 import com.example.app.presentation.base.BaseFragment
@@ -40,34 +42,43 @@ class ProfileFragment : BaseFragment<
         with(binding) {
             when (state) {
                 is ProfileViewModel.State.Loading -> {
-                    progress.isVisible = true
+                    profileShimmer.root.isVisible = true
+                    layoutError.root.isGone = true
                     layoutProfile.root.isGone = true
                 }
 
                 is ProfileViewModel.State.Content -> {
-                    progress.isGone = true
+                    profileShimmer.root.isGone = true
                     layoutProfile.root.isVisible = true
+                    layoutError.root.isGone = true
                     layoutProfile.tvFullUserName.text = state.name
 
                     if (state.isOnline) {
                         layoutProfile.tvUserStatus.text = getString(com.example.app.R.string.online)
                         layoutProfile.tvUserStatus.setTextColor(
-                            androidx.core.content.ContextCompat.getColor(requireContext(), com.example.app.R.color.green_light)
+                            ContextCompat.getColor(
+                                requireContext(),
+                                R.color.green_light
+                            )
                         )
                     } else {
-                        layoutProfile.tvUserStatus.text = getString(com.example.app.R.string.offline)
+                        layoutProfile.tvUserStatus.text =
+                            getString(R.string.offline)
                         layoutProfile.tvUserStatus.setTextColor(
-                            androidx.core.content.ContextCompat.getColor(requireContext(), com.example.app.R.color.orange)
+                            ContextCompat.getColor(
+                                requireContext(),
+                                R.color.orange
+                            )
                         )
                     }
 
-                    com.bumptech.glide.Glide.with(root)
+                    Glide.with(root)
                         .load(state.avatarUrl)
                         .into(layoutProfile.ivAvatar)
                 }
 
                 is ProfileViewModel.State.Error -> {
-                    progress.isGone = true
+                    profileShimmer.root.isGone = true
                     layoutProfile.root.isGone = true
                     layoutError.root.isVisible = true
                 }

@@ -1,9 +1,9 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.HomeWork1" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+<resources>
+
+    <style name="Base.Theme.TinkoffApp" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:statusBarColor">@color/grey_dark_secondary</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 
-    <style name="Theme.HomeWork1" parent="Base.Theme.HomeWork1" />
+    <style name="Theme.TinkoffApp" parent="Base.Theme.TinkoffApp" />
 </resources>

@@ -1,6 +1,9 @@
 package com.example.app.di.app.modules
 
+import android.content.Context
+import android.net.ConnectivityManager
 import com.example.app.data.network.ZulipApi
+import com.example.app.presentation.network_listener.NetworkListener
 import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
@@ -66,5 +69,11 @@ class NetworkModule {
     @Provides
     @Singleton
     fun gson(): Gson = Gson()
+
+    @Provides
+    @Singleton
+    fun networkListener(context: Context): NetworkListener = NetworkListener(
+        manager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    )
 
 }
